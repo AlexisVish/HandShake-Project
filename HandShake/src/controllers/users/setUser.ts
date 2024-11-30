@@ -32,7 +32,7 @@ export async function register(req: any, res: any) {
     if (!id || !name || !email || !phone || !password) {
       throw new Error("Please fill all the fields");
     }
-    const hashPassword = await bcrypt.hash(password, saltRound);
+    const hashPassword = await bcrypt.hash(password, saltRounds);
     console.log("pass", hashPassword);
 
     await User.create({
