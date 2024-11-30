@@ -9,14 +9,14 @@ body {
     justify-content: center;
     flex-direction: column;
     margin: 0;
-    background-color: #f9f0f5;
+    background-color: #f7f7f7;
     width: 100vw;
     height: 100vh;
     color: #333;
   }
   
   h1 {
-    color: #D64E98; 
+    color: #fbc2e1; 
     font-size: 72px;
     font-weight: 700;
     margin-bottom: 40px;
@@ -27,9 +27,9 @@ body {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    background-color: #D64E98; 
+    background-color: #fbc2e1; 
     color: white;
-    border: 1px solid #D64E98;
+    border: 1px solid #fbc2e1;
     border-radius: 50px;
     font-size: 20px;
     margin: 15px;
@@ -40,7 +40,7 @@ body {
   
   .btn:hover {
     background-color: white;
-    color: #D64E98; 
+    color: #fbc2e1; 
     transform: translateY(-2px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
