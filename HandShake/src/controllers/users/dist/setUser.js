@@ -130,9 +130,7 @@ function login(req, res) {
                 case 1:
                     user = _b.sent();
                     if (!user) {
-                        return [2 /*return*/, res
-                                .status(400)
-                                .send({ error: "Couldn't get the email." })];
+                        return [2 /*return*/, res.status(400).send({ error: "Couldn't get the email." })];
                     }
                     if (!user.password)
                         throw new Error("Incorrect password!");
@@ -144,8 +142,13 @@ function login(req, res) {
                         return [2 /*return*/, res.status(400).send({ error: "The password is incorrect" })];
                     }
                     token = jwt_simple_1["default"].encode(user, exports.secret);
-                    res.cookie("user", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
-                    return [2 /*return*/, res.status(200).send({ message: "Login was syccessfully completed!" })];
+                    res.cookie("user", token, {
+                        httpOnly: true,
+                        maxAge: 1000 * 60 * 60 * 24 * 7
+                    });
+                    return [2 /*return*/, res
+                            .status(200)
+                            .send({ message: "Login was syccessfully completed!" })];
                 case 3:
                     error_3 = _b.sent();
                     console.error(error_3);
