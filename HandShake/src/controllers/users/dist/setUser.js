@@ -86,7 +86,7 @@ function register(req, res) {
                     if (!id || !name || !email || !phone || !password) {
                         throw new Error("Please fill all the fields");
                     }
-                    return [4 /*yield*/, bcrypt.hash(password, saltRound)];
+                    return [4 /*yield*/, bcrypt.hash(password, saltRounds)];
                 case 1:
                     hashPassword = _b.sent();
                     console.log("pass", hashPassword);
