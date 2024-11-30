@@ -12,8 +12,8 @@ regButton.textContent = "Registration";
 logButton.addEventListener("click", handleLogin);
 regButton.addEventListener("click", handleRegistration);
 function handleLogin() {
-    window.location.href = "/HandShake/public/login/login.html";
+    window.location.href = "/login/login.html";
 }
 function handleRegistration() {
-    window.location.href = "/HandShake/public/register/register.html";
+    window.location.href = "/register/register.html";
 }
