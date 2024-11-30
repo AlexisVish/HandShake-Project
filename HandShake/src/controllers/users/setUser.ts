@@ -4,7 +4,6 @@ export const secret = "Alexis";
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-
 export async function addUser(req: any, res: any) {
   try {
     const { id, name, email, phone, password } = req.body;
@@ -30,17 +29,58 @@ export async function addUser(req: any, res: any) {
 export async function register(req: any, res: any) {
   try {
     const { id, name, email, phone, password } = req.body;
-    if(!id|| !name||!email||!phone||!password){throw new Error("Please fill all the fields");
+    if (!id || !name || !email || !phone || !password) {
+      throw new Error("Please fill all the fields");
     }
     const hashPassword = await bcrypt.hash(password, saltRound);
     console.log("pass", hashPassword);
 
     await User.create({
-        id, name, email, phone, password
-    })
-    return res.status(201).send({message:"Registration successfully sompleted"})
+      id,
+      name,
+      email,
+      phone,
+      password,
+    });
+    return res
+      .status(201)
+      .send({ message: "Registration successfully sompleted" });
   } catch (error) {
+    if ((error.code = "11000")) {
+      res.status(400).send({ error: "user already exists" });
+    }
     console.error(error);
     return res.status(500).send({ error: "Couldn't register" });
+  }
+}
+
+export async function login(req: any, res: any) {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      throw new Error("Please fill all the fields!");
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).send({ error: "Couldn't get the email." });
+    }
+    if (!user.password) throw new Error("Incorrect password!");
+    const match = await bcrypt.compare(password, user.password);
+    console.log("is match", match);
+    if (!match) {
+      return res.status(400).send({ error: "The password is incorrect" });
+    }
+
+    const token = jwt.encode(user, secret);
+    res.cookie("user", token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    return res
+      .status(200)
+      .send({ message: "Login was syccessfully completed!" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ error: "Couldn't login." });
   }
 }
