@@ -1,5 +1,5 @@
 import express from 'express';
-import { addMeeting } from '../../controllers/meeting/setMeetingController';
+import { addMeeting } from '../../controllers/meeting/setMeeting';
 
 const router = express.Router();
 

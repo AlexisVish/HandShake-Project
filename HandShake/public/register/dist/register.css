@@ -1,0 +1,129 @@
+body {
+  margin: 0;
+  font-family: "Arial", sans-serif;
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0;
+  background-color: #f7f7f7;
+  width: 100vw;
+  height: 100vh;
+  color: #333;
+}
+
+h1 {
+  color: #fbc2e1;
+  font-size: 72px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fbc2e1;
+  color: white;
+  border: 1px solid #fbc2e1;
+  border-radius: 50px;
+  font-size: 20px;
+  margin: 15px;
+  padding: 12px 30px;
+  cursor: pointer;
+  transition: all 0.01s ease-in-out;
+}
+
+.btn:hover {
+  background-color: white;
+  color: #fbc2e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0px);
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 48px;
+  }
+
+  .btn {
+    font-size: 18px;
+    padding: 10px 25px;
+  }
+}
+#app {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0 auto;
+}
+
+#form {
+  background-color: #f7f7f7;
+  border-radius: 50px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+}
+#form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+#form__label {
+  font-weight: bold;
+  font-size: 18px;
+  color: #555;
+}
+#form__input {
+  padding: 16px;
+  border: 1px solid #fbc2e1;
+  border-radius: 15px;
+  font-size: 20px;
+  width: 100%;
+  height: 20px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+#form__input:focus {
+  border-color: #fbc2e1;
+  outline: none;
+  box-shadow: 0 0 6px #a95784;
+}
+#form__button {
+  padding: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  background-color: #fbc2e1;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+#form__button:hover {
+  background-color: #a95784;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+#form__button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}

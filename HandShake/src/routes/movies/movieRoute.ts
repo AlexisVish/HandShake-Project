@@ -1,6 +1,6 @@
 import express from "express";
-import { getAllMovies } from "../../controllers/movies/getAllMoviesController";
-import { addMyMovie } from "../../controllers/movies/setMyMoviesController";
+import { getAllMovies } from "../../controllers/movies/getAllMovies";
+import { addMyMovie } from "../../controllers/movies/setMyMovies";
 
 
 const router = express.Router();
