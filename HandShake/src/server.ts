@@ -10,7 +10,6 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-
 const dbUrl = "mongodb+srv://alexisv:vivalexxxa@cluster0.fqmwt.mongodb.net/";
 const database = "HanShake";
 
