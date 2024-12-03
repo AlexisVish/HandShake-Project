@@ -12,32 +12,33 @@ class RegisterForm {
     const form = document.createElement("form");
     form.id = "form";
     form.innerHTML = `
-  <div id="form__field">
-    <label for="name" id="form__label">Name:</label>
-    <input type="text" id="name" name="name" id="form__input" placeholder="Enter your name" required>
-  </div>
-  <div id="form__field">
-    <label for="email" id="form__label">Email:</label>
-    <input type="email" id="email" name="email" id="form__input" placeholder="Enter your email" required>
-  </div>
-  <div id="form__field">
-    <label for="phone" id="form__label">Phone:</label>
-    <input type="tel" id="phone" name="phone" id="form__input" placeholder="Enter your phone number" required>
-  </div>
-  <div id="form__field">
-    <label for="password" id="form__label">Password:</label>
-    <input type="password" id="password" name="password" id="form__input" placeholder="Enter your password" required>
-  </div>
-  <div id="form__field">
-    <button type="submit" id="form__button">Register</button>
-  </div>
-`;
+      <div id="form__field">
+        <label for="name" id="form__label">Name:</label>
+        <input type="text" id="name" name="name" id="form__input" placeholder="Enter your name" required>
+      </div>
+      <div id="form__field">
+        <label for="email" id="form__label">Email:</label>
+        <input type="email" id="email" name="email" id="form__input" placeholder="Enter your email" required>
+      </div>
+      <div id="form__field">
+        <label for="phone" id="form__label">Phone:</label>
+        <input type="tel" id="phone" name="phone" id="form__input" placeholder="Enter your phone number" required>
+      </div>
+      <div id="form__field">
+        <label for="password" id="form__label">Password:</label>
+        <input type="password" id="password" name="password" id="form__input" placeholder="Enter your password" required>
+      </div>
+      <div id="form__field">
+        <button type="submit" id="form__button">Register</button>
+      </div>
+    `;
     return form;
   }
 }
 
 // class for validating email and phone
 class FormValidator {
+
   static isValidEmail(email: string): boolean {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -76,14 +77,8 @@ async function submitRegistrationForm(event: Event) {
       return;
     }
 
-    const submitButton = form.querySelector(
-      'button[type="submit"]'
-    ) as HTMLButtonElement;
-    submitButton.disabled = true;
-    submitButton.textContent = "Registering...";
-
     // sending data to the server
-    const response = await fetch("/api/users/register", {
+    const response = await fetch("http://localhost:3000/api/users/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,14 +96,11 @@ async function submitRegistrationForm(event: Event) {
     console.log("User registered:", user);
 
     form.reset();
+    alert(`User ${user.name} registered successfully`);
+
   } catch (error) {
     console.error("Error registering user:", error);
-  } finally {
-    const submitButton = document.querySelector(
-      'button[type="submit"]'
-    ) as HTMLButtonElement;
-    submitButton.disabled = false;
-    submitButton.textContent = "Register";
+    alert("Failed to register user");
   }
 }
 

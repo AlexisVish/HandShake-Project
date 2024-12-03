@@ -41,7 +41,7 @@ var RegisterForm = /** @class */ (function () {
     RegisterForm.prototype.createForm = function () {
         var form = document.createElement("form");
         form.id = "form";
-        form.innerHTML = "\n  <div id=\"form__field\">\n    <label for=\"name\" id=\"form__label\">Name:</label>\n    <input type=\"text\" id=\"name\" name=\"name\" id=\"form__input\" placeholder=\"Enter your name\" required>\n  </div>\n  <div id=\"form__field\">\n    <label for=\"email\" id=\"form__label\">Email:</label>\n    <input type=\"email\" id=\"email\" name=\"email\" id=\"form__input\" placeholder=\"Enter your email\" required>\n  </div>\n  <div id=\"form__field\">\n    <label for=\"phone\" id=\"form__label\">Phone:</label>\n    <input type=\"tel\" id=\"phone\" name=\"phone\" id=\"form__input\" placeholder=\"Enter your phone number\" required>\n  </div>\n  <div id=\"form__field\">\n    <label for=\"password\" id=\"form__label\">Password:</label>\n    <input type=\"password\" id=\"password\" name=\"password\" id=\"form__input\" placeholder=\"Enter your password\" required>\n  </div>\n  <div id=\"form__field\">\n    <button type=\"submit\" id=\"form__button\">Register</button>\n  </div>\n";
+        form.innerHTML = "\n      <div id=\"form__field\">\n        <label for=\"name\" id=\"form__label\">Name:</label>\n        <input type=\"text\" id=\"name\" name=\"name\" id=\"form__input\" placeholder=\"Enter your name\" required>\n      </div>\n      <div id=\"form__field\">\n        <label for=\"email\" id=\"form__label\">Email:</label>\n        <input type=\"email\" id=\"email\" name=\"email\" id=\"form__input\" placeholder=\"Enter your email\" required>\n      </div>\n      <div id=\"form__field\">\n        <label for=\"phone\" id=\"form__label\">Phone:</label>\n        <input type=\"tel\" id=\"phone\" name=\"phone\" id=\"form__input\" placeholder=\"Enter your phone number\" required>\n      </div>\n      <div id=\"form__field\">\n        <label for=\"password\" id=\"form__label\">Password:</label>\n        <input type=\"password\" id=\"password\" name=\"password\" id=\"form__input\" placeholder=\"Enter your password\" required>\n      </div>\n      <div id=\"form__field\">\n        <button type=\"submit\" id=\"form__button\">Register</button>\n      </div>\n    ";
         return form;
     };
     return RegisterForm;
@@ -63,11 +63,11 @@ var FormValidator = /** @class */ (function () {
 // function for submitting registration form and sending data to the server
 function submitRegistrationForm(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var form, formData, name, email, phone, password, submitButton, response, error, user, error_1, submitButton;
+        var form, formData, name, email, phone, password, response, error, user, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 5, 6, 7]);
+                    _a.trys.push([0, 5, , 6]);
                     event.preventDefault();
                     form = event.target;
                     formData = new FormData(form);
@@ -87,10 +87,7 @@ function submitRegistrationForm(event) {
                         alert("Please enter a valid phone number");
                         return [2 /*return*/];
                     }
-                    submitButton = form.querySelector('button[type="submit"]');
-                    submitButton.disabled = true;
-                    submitButton.textContent = "Registering...";
-                    return [4 /*yield*/, fetch("/api/users/register", {
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/users/register", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"
@@ -110,17 +107,14 @@ function submitRegistrationForm(event) {
                     user = _a.sent();
                     console.log("User registered:", user);
                     form.reset();
-                    return [3 /*break*/, 7];
+                    alert("User " + user.name + " registered successfully");
+                    return [3 /*break*/, 6];
                 case 5:
                     error_1 = _a.sent();
                     console.error("Error registering user:", error_1);
-                    return [3 /*break*/, 7];
-                case 6:
-                    submitButton = document.querySelector('button[type="submit"]');
-                    submitButton.disabled = false;
-                    submitButton.textContent = "Register";
-                    return [7 /*endfinally*/];
-                case 7: return [2 /*return*/];
+                    alert("Failed to register user");
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
