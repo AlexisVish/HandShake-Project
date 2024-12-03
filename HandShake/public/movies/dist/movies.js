@@ -34,9 +34,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var appConteiner = document.getElementById('app');
-var moviesConteiner = document.createElement('div');
-moviesConteiner.className = 'movies';
+var appContainer = document.getElementById('app');
+var moviesContainer = document.createElement('div');
+moviesContainer.className = 'movies';
 function renderMovieCard(movie) {
     var movieCard = document.createElement('div');
     movieCard.className = 'card';
@@ -67,7 +67,7 @@ function renderMovies() {
                 case 0: return [4 /*yield*/, fetchMovies()];
                 case 1:
                     movies = _a.sent();
-                    moviesConteiner.innerHTML = movies.map(function (movie) { return renderMovieCard(movie); }).join('');
+                    moviesContainer.innerHTML = movies.map(function (movie) { return renderMovieCard(movie); }).join('');
                     return [2 /*return*/];
             }
         });

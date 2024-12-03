@@ -8,9 +8,9 @@ interface IMovie {
     description: string;
     }
 
-const appConteiner = document.getElementById('app');
-const moviesConteiner = document.createElement('div');
-moviesConteiner.className = 'movies';
+const appContainer = document.getElementById('app');
+const moviesContainer = document.createElement('div');
+moviesContainer.className = 'movies';
 
 function renderMovieCard(movie: IMovie): HTMLDivElement {
     const movieCard = document.createElement('div');
@@ -34,7 +34,7 @@ async function fetchMovies() {
 
 async function renderMovies() {
     const movies = await fetchMovies();
-    moviesConteiner.innerHTML = movies.map(movie => renderMovieCard(movie)).join('');
+    moviesContainer.innerHTML = movies.map(movie => renderMovieCard(movie)).join('');
 }
 
 
