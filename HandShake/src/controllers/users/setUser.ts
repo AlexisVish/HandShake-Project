@@ -28,15 +28,14 @@ export async function addUser(req: any, res: any) {
 }
 export async function register(req: any, res: any) {
   try {
-    const { id, name, email, phone, password } = req.body;
-    if (!id || !name || !email || !phone || !password) {
+    const { name, email, phone, password } = req.body;
+    if (!name || !email || !phone || !password) {
       throw new Error("Please fill all the fields");
     }
     const hashPassword = await bcrypt.hash(password, saltRounds);
     console.log("pass", hashPassword);
 
     await User.create({
-      id,
       name,
       email,
       phone,
@@ -45,7 +44,7 @@ export async function register(req: any, res: any) {
     return res
       .status(201)
       .send({ message: "Registration successfully sompleted" });
-  } catch (error) {
+  } catch (error: any) {
     if ((error.code = "11000")) {
       res.status(400).send({ error: "user already exists" });
     }

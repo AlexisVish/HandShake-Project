@@ -143,62 +143,160 @@ var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
   }
 };
 
-var appConteiner = document.getElementById('app');
-var moviesConteiner = document.createElement('div');
-moviesConteiner.className = 'movies';
+var MovieApp =
+/** @class */
+function () {
+  function MovieApp(containerId) {
+    this.movies = [];
+    var container = document.getElementById(containerId);
 
-function renderMovieCard(movie) {
-  var movieCard = document.createElement('div');
-  movieCard.className = 'card';
-  movieCard.innerHTML = "\n        <img src=\"" + movie.imageUrl + "\" alt=\"" + movie.name + "\" class=\"card__image\">\n        <h2 class=\"card__name\">" + movie.name + "</h2>\n        <p class=\"card__genre\">" + movie.genre + "</p>\n        <p class=\"card__director\">" + movie.director + "</p>\n        <p class=\"card__year\">" + movie.year + "</p>\n        <p class=\"card__description\">" + movie.description + "</p>\n    ";
-  return movieCard;
-}
+    if (!container) {
+      throw new Error("App container not found");
+    }
 
-function fetchMovies() {
-  return __awaiter(this, void 0, void 0, function () {
-    var response, movies;
-    return __generator(this, function (_a) {
-      switch (_a.label) {
-        case 0:
-          return [4
-          /*yield*/
-          , fetch('http://localhost:3000/api/movies/get-all-movies')];
+    this.appContainer = container;
+    this.currentMovieIndex = 0;
+    this.init();
+  }
 
-        case 1:
-          response = _a.sent();
-          return [4
-          /*yield*/
-          , response.json()];
+  MovieApp.prototype.init = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            return [4
+            /*yield*/
+            , this.fetchMovies()];
 
-        case 2:
-          movies = _a.sent().movies;
-          return [2
-          /*return*/
-          , movies];
-      }
+          case 1:
+            _a.sent();
+
+            if (this.movies.length) {
+              this.renderMovie();
+            } else {
+              this.displayNoMoviesMessage();
+            }
+
+            return [2
+            /*return*/
+            ];
+        }
+      });
     });
-  });
-}
+  };
 
-function renderMovies() {
-  return __awaiter(this, void 0, void 0, function () {
-    var movies;
-    return __generator(this, function (_a) {
-      switch (_a.label) {
-        case 0:
-          return [4
-          /*yield*/
-          , fetchMovies()];
+  MovieApp.prototype.fetchMovies = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      var response, data, error_1;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            _a.trys.push([0, 3,, 4]);
 
-        case 1:
-          movies = _a.sent();
-          moviesConteiner.innerHTML = movies.map(function (movie) {
-            return renderMovieCard(movie);
-          }).join('');
-          return [2
-          /*return*/
-          ];
-      }
+            return [4
+            /*yield*/
+            , fetch("http://localhost:3000/api/movies/get-all-movies")];
+
+          case 1:
+            response = _a.sent();
+            return [4
+            /*yield*/
+            , response.json()];
+
+          case 2:
+            data = _a.sent();
+            this.movies = data.movies;
+            return [3
+            /*break*/
+            , 4];
+
+          case 3:
+            error_1 = _a.sent();
+            console.error("Error fetching movies:", error_1);
+            return [3
+            /*break*/
+            , 4];
+
+          case 4:
+            return [2
+            /*return*/
+            ];
+        }
+      });
     });
-  });
-}
+  };
+
+  MovieApp.prototype.renderMovie = function () {
+    this.appContainer.innerHTML = ""; // Clear previous content
+
+    var movie = this.movies[this.currentMovieIndex];
+    var movieCard = this.createMovieCard(movie);
+    var buttonsContainer = this.createButtons();
+    this.appContainer.appendChild(movieCard);
+    this.appContainer.appendChild(buttonsContainer);
+  };
+
+  MovieApp.prototype.createMovieCard = function (movie) {
+    var movieCard = document.createElement("div");
+    movieCard.className = "card";
+    movieCard.innerHTML = "\n      <img src=\"" + movie.imageUrl + "\" alt=\"" + movie.name + "\" class=\"card__image\">\n      <h2 class=\"card__name\">" + movie.name + "</h2>\n      <p class=\"card__genre\"><strong>Genre:</strong> " + movie.genre + "</p>\n      <p class=\"card__director\"><strong>Director:</strong> " + movie.director + "</p>\n      <p class=\"card__year\"><strong>Year:</strong> " + movie.year + "</p>\n      <p class=\"card__description\"><strong>Description:</strong> " + movie.description + "</p>\n    ";
+    return movieCard;
+  };
+
+  MovieApp.prototype.createButtons = function () {
+    var _this = this;
+
+    var buttonsContainer = document.createElement("div");
+    buttonsContainer.className = "buttons-container";
+    var yesButton = this.createButton("Yes", "yes-button", function () {
+      return _this.handleYesClick();
+    });
+    var noButton = this.createButton("No", "no-button", function () {
+      return _this.handleNoClick();
+    });
+    buttonsContainer.appendChild(yesButton);
+    buttonsContainer.appendChild(noButton);
+    return buttonsContainer;
+  };
+
+  MovieApp.prototype.createButton = function (text, className, onClick) {
+    var button = document.createElement("button");
+    button.textContent = text;
+    button.className = className;
+    button.addEventListener("click", onClick);
+    return button;
+  };
+
+  MovieApp.prototype.handleYesClick = function () {
+    var movie = this.movies[this.currentMovieIndex];
+    alert("Movie added to favorites: " + movie.name);
+    this.nextMovie();
+  };
+
+  MovieApp.prototype.handleNoClick = function () {
+    var movie = this.movies[this.currentMovieIndex];
+    alert("Movie skipped: " + movie.name);
+    this.nextMovie();
+  };
+
+  MovieApp.prototype.nextMovie = function () {
+    this.currentMovieIndex++;
+
+    if (this.currentMovieIndex < this.movies.length) {
+      this.renderMovie();
+    } else {
+      this.displayNoMoviesMessage();
+    }
+  };
+
+  MovieApp.prototype.displayNoMoviesMessage = function () {
+    this.appContainer.innerHTML = "\n        <p>No more movies to display. <a href=\"/home\" class=\"home-link\">Go to Home</a></p>\n    ";
+  };
+
+  return MovieApp;
+}(); // Initialize the application
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  new MovieApp("app");
+});
