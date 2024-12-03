@@ -52,55 +52,41 @@ class FormValidator {
 
 // function for submitting registration form and sending data to the server
 async function submitRegistrationForm(event: Event) {
+  event.preventDefault();
+
+  const form = event.target as HTMLFormElement;
+  const formData = new FormData(form);
+
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const phone = formData.get("phone") as string;
+  const password = formData.get("password") as string;
+
+  if (!name || !email || !phone || !password) {
+    alert("All fields are required");
+    return;
+  }
+
   try {
-    event.preventDefault();
-
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const phone = formData.get("phone") as string;
-    const password = formData.get("password") as string;
-
-    if (!name || !email || !phone || !password) {
-      alert("All fields are required");
-      return;
-    }
-
-    if (!FormValidator.isValidEmail(email)) {
-      alert("Please enter a valid email address");
-      return;
-    }
-
-    if (!FormValidator.isValidPhone(phone)) {
-      alert("Please enter a valid phone number");
-      return;
-    }
-
-    // sending data to the server
     const response = await fetch("http://localhost:3000/api/users/register", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, phone, password }),
     });
 
     if (!response.ok) {
       const error = await response.json();
-      alert(`Registration failed: ${error.message || "Unknown error"}`);
+      alert(`Error: ${error.message}`);
       return;
     }
 
-    const user: IUser = await response.json();
-    console.log("User registered:", user);
-
+    const data = await response.json();
+    alert(`User ${data.name} registered successfully`);
     form.reset();
-    alert(`User ${user.name} registered successfully`);
-
+    window.location.href = "/login";
   } catch (error) {
-    console.error("Error registering user:", error);
-    alert("Failed to register user");
+    console.error("Registration failed:", error);
+    alert("Registration failed");
   }
 }
 

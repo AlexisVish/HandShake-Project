@@ -11,8 +11,8 @@ app.get('/', (req, res) => {
 })
 
 
-const dbUrl = "mongodb+srv://alexisv:vivalexxxa@cluster0.fqmwt.mongodb.net/";
-const database = "HanShake";
+const dbUrl = "mongodb+srv://alexisv:vivalexxxa@cluster0.fqmwt.mongodb.net";
+const database = "HandShake";
 
 mongoose.connect(`${dbUrl}/${database}`).then(()=>{
     console.info("DB connected")
