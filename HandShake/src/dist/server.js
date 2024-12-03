@@ -9,8 +9,8 @@ app.use(express_1["default"].static('public'));
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
-var dbUrl = "mongodb+srv://alexisv:vivalexxxa@cluster0.fqmwt.mongodb.net/";
-var database = "HanShake";
+var dbUrl = "mongodb+srv://alexis:Vivalexxxa@cluster0.yzu9p.mongodb.net/";
+var database = "HandShake";
 mongoose_1["default"].connect(dbUrl + "/" + database).then(function () {
     console.info("DB connected");
 })["catch"](function (err) {
