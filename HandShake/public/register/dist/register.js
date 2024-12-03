@@ -87,7 +87,7 @@ function submitRegistrationForm(event) {
                         alert("Please enter a valid phone number");
                         return [2 /*return*/];
                     }
-                    return [4 /*yield*/, fetch("/api/users/register", {
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/users/register", {
                             method: "POST",
                             headers: {
                                 "Content-Type": "application/json"

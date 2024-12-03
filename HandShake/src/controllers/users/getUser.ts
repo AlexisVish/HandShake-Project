@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 
 export async function getUser(req: Request, res: Response) {
     try {
-        const user = await User.findById(req.params.id);
+        const { user } = req.cookies;
         res.status(200).json({ message: "User found", user });
     }
     catch (error) {

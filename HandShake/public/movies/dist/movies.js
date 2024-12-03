@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,21 +34,42 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
-exports.getUser = void 0;
-function getUser(req, res) {
+var appConteiner = document.getElementById('app');
+var moviesConteiner = document.createElement('div');
+moviesConteiner.className = 'movies';
+function renderMovieCard(movie) {
+    var movieCard = document.createElement('div');
+    movieCard.className = 'card';
+    movieCard.innerHTML = "\n        <img src=\"" + movie.imageUrl + "\" alt=\"" + movie.name + "\" class=\"card__image\">\n        <h2 class=\"card__name\">" + movie.name + "</h2>\n        <p class=\"card__genre\">" + movie.genre + "</p>\n        <p class=\"card__director\">" + movie.director + "</p>\n        <p class=\"card__year\">" + movie.year + "</p>\n        <p class=\"card__description\">" + movie.description + "</p>\n    ";
+    return movieCard;
+}
+function fetchMovies() {
     return __awaiter(this, void 0, void 0, function () {
-        var user;
+        var response, movies;
         return __generator(this, function (_a) {
-            try {
-                user = req.cookies.user;
-                res.status(200).json({ message: "User found", user: user });
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetch('http://localhost:3000/api/movies/get-all-movies')];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    movies = (_a.sent()).movies;
+                    return [2 /*return*/, movies];
             }
-            catch (error) {
-                res.status(500).json({ message: "Error finding user", error: error });
-            }
-            return [2 /*return*/];
         });
     });
 }
-exports.getUser = getUser;
+function renderMovies() {
+    return __awaiter(this, void 0, void 0, function () {
+        var movies;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetchMovies()];
+                case 1:
+                    movies = _a.sent();
+                    moviesConteiner.innerHTML = movies.map(function (movie) { return renderMovieCard(movie); }).join('');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
