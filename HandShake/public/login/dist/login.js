@@ -34,19 +34,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-// class for creating login form
 var LoginForm = /** @class */ (function () {
     function LoginForm() {
     }
     LoginForm.prototype.createForm = function () {
         var form = document.createElement('form');
         form.id = 'form';
-        form.innerHTML = "\n        <div id='form__field'>\n            <lable for='email' id='form__label'>E-mail:</lable>\n            <input type='text' id='email' name='email' id='form__input' placeholder='Enter e-mail' required>\n        </div>\n        <div id='form__field'>\n            <lable for='password' id='form__label'>Password:</lable>\n            <input type='password' id='password' name='password' id='form__input' placeholder='Enter your password' required>\n        </div>\n        <div id='form__field'>\n            <button type='submit' id='form__button'>Login</button>\n        </div>\n        ";
+        form.innerHTML = "\n      <div id='form__field'>\n          <label for='email' id='form__label'>E-mail:</label>\n          <input type='email' id='email' name='email' placeholder='Enter e-mail' required>\n      </div>\n      <div id='form__field'>\n          <label for='password' id='form__label'>Password:</label>\n          <input type='password' id='password' name='password' placeholder='Enter your password' required>\n      </div>\n      <div id='form__field'>\n          <button type='submit' id='form__button'>Login</button>\n      </div>\n      ";
         return form;
     };
     return LoginForm;
 }());
-// class for validating email
 var FormValidator = /** @class */ (function () {
     function FormValidator() {
     }
@@ -54,12 +52,14 @@ var FormValidator = /** @class */ (function () {
         var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
+    FormValidator.isValidPassword = function (password) {
+        return password.length >= 6;
+    };
     return FormValidator;
 }());
-// function for submitting login form and sending data to the server
 function submitLoginForm(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var form, formData, email, password, response, user, message, error_1;
+        var form, formData, email, password, response, data, message, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -71,6 +71,9 @@ function submitLoginForm(event) {
                     password = formData.get('password');
                     if (!FormValidator.isValidEmail(email)) {
                         throw new Error('Invalid email');
+                    }
+                    if (!FormValidator.isValidPassword(password)) {
+                        throw new Error('Password must be at least 6 characters');
                     }
                     return [4 /*yield*/, fetch('/login', {
                             method: 'POST',
@@ -84,8 +87,8 @@ function submitLoginForm(event) {
                     if (!response.ok) return [3 /*break*/, 3];
                     return [4 /*yield*/, response.json()];
                 case 2:
-                    user = _a.sent();
-                    alert("Welcome, " + user.name);
+                    data = _a.sent();
+                    alert("Welcome, " + data.message);
                     return [3 /*break*/, 5];
                 case 3: return [4 /*yield*/, response.text()];
                 case 4:
@@ -101,7 +104,6 @@ function submitLoginForm(event) {
         });
     });
 }
-// function for rendering login form
 var appContainer = document.getElementById('app');
 var loginForm = new LoginForm().createForm();
 loginForm.addEventListener('submit', submitLoginForm);
