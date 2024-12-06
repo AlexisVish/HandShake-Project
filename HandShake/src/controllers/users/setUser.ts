@@ -8,8 +8,11 @@ export async function addUser(req: any, res: any) {
   try {
     const { id, name, email, phone, password } = req.body;
     console.log(phone);
-
+    if (!name || !email || !phone || !password) {
+      return res.status(400).send({ error: "Please fill all the fields" });
+    }
     
+    const hashPassword = await bcrypt.hash(password, saltRounds);
     const result = await User.create({
       name,
       phone,
@@ -19,9 +22,7 @@ export async function addUser(req: any, res: any) {
     if (!result) {
       return res.status(400).send({ error: "No user info has been sent" });
     }
-    return res
-      .status(201)
-      .send({ message: "User has been successfully added!" });
+    return res.status(201).send({ message: "User has been successfully added!" });
   } catch (error: any) {
     console.error(error);
     return res.status(500).send({ error: "Couldn't add the user" });
@@ -40,9 +41,8 @@ export async function register(req: any, res: any) {
       throw new Error("Please fill all the fields");
     }
     const hashPassword = await bcrypt.hash(password, saltRounds);
-    console.log("pass", hashPassword);
 
-    await User.create({
+    const newUser = await User.create({
       id,
       name,
       email,
@@ -51,14 +51,14 @@ export async function register(req: any, res: any) {
     });
     await newUser.save();
 
-    // Generate JWT token
     const payload = { _id: newUser._id, email: newUser.email };
     const token = jwt.encode(payload, secret)
     return res
       .status(201)
       .send({ message: "Registration successfully sompleted" });
   } catch (error) {
-    if ((error.code = "11000")) {
+    console.error(error);
+    if (error.code = "11000") {
       res.status(400).send({ error: "user already exists" });
     }
     console.error(error);
@@ -71,6 +71,8 @@ export async function login(req: any, res: any) {
     const { email, password } = req.body;
     if (!email || !password) {
       throw new Error("Please fill all the fields!");
+      return res.status(400).send({ error: "Please fill all the fields!" });
+
     }
     const user = await User.findOne({ email });
     if (!user) {
@@ -83,14 +85,12 @@ export async function login(req: any, res: any) {
       return res.status(400).send({ error: "The password is incorrect" });
     }
 
-    const token = jwt.encode(user, secret);
+    const token = jwt.encode({ _id: user._id, email: user.email }, secret);
     res.cookie("user", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    return res
-      .status(200)
-      .send({ message: "Login was syccessfully completed!" });
+    return res.status(200).send({ message: "Login was syccessfully completed!" });
   } catch (error) {
     console.error(error);
     return res.status(500).send({ error: "Couldn't login." });

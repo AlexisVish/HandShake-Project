@@ -39,9 +39,9 @@ var LoginForm = /** @class */ (function () {
     function LoginForm() {
     }
     LoginForm.prototype.createForm = function () {
-        var form = document.createElement('form');
-        form.id = 'form';
-        form.innerHTML = "\n        <div id='form__field'>\n            <lable for='email' id='form__label'>E-mail:</lable>\n            <input type='text' id='email' name='email' id='form__input' placeholder='Enter e-mail' required>\n        </div>\n        <div id='form__field'>\n            <lable for='password' id='form__label'>Password:</lable>\n            <input type='password' id='password' name='password' id='form__input' placeholder='Enter your password' required>\n        </div>\n        <div id='form__field'>\n            <button type='submit' id='form__button'>Login</button>\n        </div>\n        ";
+        var form = document.createElement("form");
+        form.id = "form";
+        form.innerHTML = "\n        <div id='form__field'>\n            <lable for='email' id='form__label'>E-mail:</lable>\n            <input type='text' id='email' name='email' id='form__input' placeholder='Enter e-mail' required>\n        </div>\n        <div id='form__field'>\n            <lable for='password' id='form__label'>Password:</lable>\n            <input type='text' id='email' name='email' placeholder='Enter e-mail' required>\n        </div>\n        <div id='form__field'>\n            <button type='submit' id='form__button'>Login</button>\n        </div>\n        ";
         return form;
     };
     return LoginForm;
@@ -67,15 +67,15 @@ function submitLoginForm(event) {
                     event.preventDefault();
                     form = event.target;
                     formData = new FormData(form);
-                    email = formData.get('email');
-                    password = formData.get('password');
+                    email = formData.get("email");
+                    password = formData.get("password");
                     if (!FormValidator.isValidEmail(email)) {
-                        throw new Error('Invalid email');
+                        throw new Error("Invalid email");
                     }
-                    return [4 /*yield*/, fetch('/login', {
-                            method: 'POST',
+                    return [4 /*yield*/, fetch("/login", {
+                            method: "POST",
                             headers: {
-                                'Content-Type': 'application/json'
+                                "Content-Type": "application/json"
                             },
                             body: JSON.stringify({ email: email, password: password })
                         })];
@@ -102,7 +102,7 @@ function submitLoginForm(event) {
     });
 }
 // function for rendering login form
-var appContainer = document.getElementById('app');
+var appContainer = document.getElementById("app");
 var loginForm = new LoginForm().createForm();
-loginForm.addEventListener('submit', submitLoginForm);
+loginForm.addEventListener("submit", submitLoginForm);
 appContainer.append(loginForm);
