@@ -77,13 +77,13 @@ function addUser(req, res) {
 exports.addUser = addUser;
 function register(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, id, name, email, phone, password, hashPassword, error_2;
+        var _a, name, email, phone, password, hashPassword, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
-                    _a = req.body, id = _a.id, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
-                    if (!id || !name || !email || !phone || !password) {
+                    _a = req.body, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
+                    if (!name || !email || !phone || !password) {
                         throw new Error("Please fill all the fields");
                     }
                     return [4 /*yield*/, bcrypt.hash(password, saltRounds)];
@@ -91,7 +91,6 @@ function register(req, res) {
                     hashPassword = _b.sent();
                     console.log("pass", hashPassword);
                     return [4 /*yield*/, userModel_1["default"].create({
-                            id: id,
                             name: name,
                             email: email,
                             phone: phone,
