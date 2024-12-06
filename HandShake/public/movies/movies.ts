@@ -1,12 +1,4 @@
-interface IMovie {
-  _id: string;
-  name: string;
-  director: string;
-  year: number;
-  imageUrl: string;
-  genre: string;
-  description: string;
-}
+import {IMovie} from "/workspaces/HandShake-Project/HandShake/src/models/movies/movieModel"
 
 class MovieApp {
   private appContainer: HTMLElement;
@@ -62,8 +54,8 @@ class MovieApp {
     movieCard.className = "card";
 
     movieCard.innerHTML = `
-      <img src="${movie.imageUrl}" alt="${movie.name}" class="card__image">
-      <h2 class="card__name">${movie.name}</h2>
+      <img src="${movie.imageURL}" alt="${movie.title}" class="card__image">
+      <h2 class="card__name">${movie.title}</h2>
       <p class="card__genre"><strong>Genre:</strong> ${movie.genre}</p>
       <p class="card__director"><strong>Director:</strong> ${movie.director}</p>
       <p class="card__year"><strong>Year:</strong> ${movie.year}</p>

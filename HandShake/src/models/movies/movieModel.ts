@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, model } from "mongoose";
 
-interface IMovie extends Document {
+export interface IMovie extends Document {
     title: string;
     year: number;
     genre: string;
