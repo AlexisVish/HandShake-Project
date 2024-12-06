@@ -10,8 +10,8 @@ interface IMovie {
 
 class MovieApp {
   private appContainer: HTMLElement;
-  private currentMovieIndex: number;
   private movies: IMovie[] = [];
+  private currentMovieIndex: number = 0;
 
   constructor(containerId: string) {
     const container = document.getElementById(containerId);
@@ -19,12 +19,11 @@ class MovieApp {
       throw new Error("App container not found");
     }
     this.appContainer = container;
-    this.currentMovieIndex = 0;
-
     this.init();
   }
 
-  private async init() {
+  // Initialize the app by fetching movies and rendering the first movie
+  private async init(): Promise<void> {
     await this.fetchMovies();
     if (this.movies.length) {
       this.renderMovie();
@@ -33,7 +32,8 @@ class MovieApp {
     }
   }
 
-  private async fetchMovies() {
+  // Fetch movies from the server
+  private async fetchMovies(): Promise<void> {
     try {
       const response = await fetch(
         "http://localhost:3000/api/movies/get-all-movies"
@@ -45,9 +45,9 @@ class MovieApp {
     }
   }
 
-  private renderMovie() {
-    this.appContainer.innerHTML = ""; // Clear previous content
-
+  // Render the current movie
+  private renderMovie(): void {
+    this.appContainer.innerHTML = ""; // Clear the container
     const movie = this.movies[this.currentMovieIndex];
     const movieCard = this.createMovieCard(movie);
     const buttonsContainer = this.createButtons();
@@ -56,6 +56,7 @@ class MovieApp {
     this.appContainer.appendChild(buttonsContainer);
   }
 
+  // Create the movie card
   private createMovieCard(movie: IMovie): HTMLDivElement {
     const movieCard = document.createElement("div");
     movieCard.className = "card";
@@ -72,6 +73,7 @@ class MovieApp {
     return movieCard;
   }
 
+  // Create Yes and No buttons
   private createButtons(): HTMLDivElement {
     const buttonsContainer = document.createElement("div");
     buttonsContainer.className = "buttons-container";
@@ -89,6 +91,7 @@ class MovieApp {
     return buttonsContainer;
   }
 
+  // Create a reusable button
   private createButton(
     text: string,
     className: string,
@@ -101,21 +104,40 @@ class MovieApp {
     return button;
   }
 
-  private handleYesClick() {
+  // Handle Yes button click
+  private async handleYesClick(): Promise<void> {
     const movie = this.movies[this.currentMovieIndex];
-    alert(`Movie added to favorites: ${movie.name}`);
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/movies/add-my-movie",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ movieId: movie._id }),
+        }
+      );
+
+      if (response.ok) {
+        alert(`Movie added to favorites: ${movie.name}`);
+      } else {
+        console.error("Failed to add movie:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error adding movie:", error);
+    }
 
     this.nextMovie();
   }
 
-  private handleNoClick() {
-    const movie = this.movies[this.currentMovieIndex];
-    alert(`Movie skipped: ${movie.name}`);
-
+  // Handle No button click
+  private handleNoClick(): void {
     this.nextMovie();
   }
 
-  private nextMovie() {
+  // Show the next movie or display a message if no more movies
+  private nextMovie(): void {
     this.currentMovieIndex++;
     if (this.currentMovieIndex < this.movies.length) {
       this.renderMovie();
@@ -124,14 +146,15 @@ class MovieApp {
     }
   }
 
-  private displayNoMoviesMessage() {
+  // Display a message when no more movies are available
+  private displayNoMoviesMessage(): void {
     this.appContainer.innerHTML = `
-        <p>No more movies to display. <a href="/home" class="home-link">Go to Home</a></p>
+      <p>No more movies to display. <a href="/home" class="home-link">Go to Home</a></p>
     `;
   }
 }
 
-// Initialize the application
+// Initialize the app
 document.addEventListener("DOMContentLoaded", () => {
-  new MovieApp("app");
+  new MovieApp("MovieContainer");
 });
