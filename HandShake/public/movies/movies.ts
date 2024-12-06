@@ -112,7 +112,7 @@ class MovieApp {
       );
 
       if (response.ok) {
-        alert(`Movie added to favorites: ${movie.name}`);
+        alert(`Movie added to favorites: ${movie.title}`);
       } else {
         console.error("Failed to add movie:", await response.text());
       }
