@@ -9,13 +9,15 @@ app.use(express_1["default"].static('public'));
 app.get('/', function (req, res) {
     res.send('Hello World!');
 });
-var dbUrl = "mongodb+srv://alexis:Vivalexxxa@cluster0.yzu9p.mongodb.net/";
+var dbUrl = "mongodb+srv://alexisv:vivalexxxa@cluster0.fqmwt.mongodb.net";
 var database = "HandShake";
 mongoose_1["default"].connect(dbUrl + "/" + database).then(function () {
     console.info("DB connected");
 })["catch"](function (err) {
     console.error(err);
 });
+var userRoute_1 = require("./routes/users/userRoute");
+app.use("/api/users", userRoute_1["default"]);
 app.listen(port, function () {
     console.log("App listening on port " + port);
 });
