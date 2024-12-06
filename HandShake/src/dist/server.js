@@ -16,6 +16,8 @@ mongoose_1["default"].connect(dbUrl + "/" + database).then(function () {
 })["catch"](function (err) {
     console.error(err);
 });
+var userRoute_1 = require("./routes/users/userRoute");
+app.use("/api/users", userRoute_1["default"]);
 app.listen(port, function () {
     console.log("App listening on port " + port);
 });

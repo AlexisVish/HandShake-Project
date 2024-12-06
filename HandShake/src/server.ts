@@ -19,6 +19,9 @@ mongoose.connect(`${dbUrl}/${database}`).then(()=>{
     console.error(err)
 });
 
+import userRoute from './routes/users/userRoute';
+app.use("/api/users", userRoute);
+
 app.listen(port, () => {
     console.log(`App listening on port ${port}`)
   })
