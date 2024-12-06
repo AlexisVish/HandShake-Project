@@ -9,6 +9,7 @@ export async function addUser(req: any, res: any) {
     const { id, name, email, phone, password } = req.body;
     console.log(phone);
 
+    
     const result = await User.create({
       name,
       phone,
@@ -29,6 +30,12 @@ export async function addUser(req: any, res: any) {
 export async function register(req: any, res: any) {
   try {
     const { id, name, email, phone, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+    
     if (!id || !name || !email || !phone || !password) {
       throw new Error("Please fill all the fields");
     }
@@ -40,8 +47,13 @@ export async function register(req: any, res: any) {
       name,
       email,
       phone,
-      password,
+      password:hashPassword,
     });
+    await newUser.save();
+
+    // Generate JWT token
+    const payload = { _id: newUser._id, email: newUser.email };
+    const token = jwt.encode(payload, secret)
     return res
       .status(201)
       .send({ message: "Registration successfully sompleted" });
