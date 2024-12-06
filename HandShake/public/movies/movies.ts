@@ -128,8 +128,9 @@ class MovieApp {
       console.error("Error adding movie:", error);
     }
 
-    this.nextMovie();
-  }
+const appContainer = document.getElementById('app');
+const moviesContainer = document.createElement('div');
+moviesContainer.className = 'movies';
 
   // Handle No button click
   private handleNoClick(): void {
@@ -154,7 +155,19 @@ class MovieApp {
   }
 }
 
-// Initialize the app
-document.addEventListener("DOMContentLoaded", () => {
-  new MovieApp("MovieContainer");
-});
+async function fetchMovies() {
+    const response = await fetch('http://localhost:3000/api/movies/get-all-movies');
+    const { movies } = await response.json();
+    return movies;
+}
+
+async function renderMovies() {
+    const movies = await fetchMovies();
+    moviesContainer.innerHTML = movies.map(movie => renderMovieCard(movie)).join('');
+}
+
+
+        
+  
+
+

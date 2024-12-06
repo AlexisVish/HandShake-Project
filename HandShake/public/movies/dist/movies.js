@@ -131,7 +131,7 @@ var MovieApp = /** @class */ (function () {
     // Handle Yes button click
     MovieApp.prototype.handleYesClick = function () {
         return __awaiter(this, void 0, Promise, function () {
-            var movie, response, _a, _b, _c, error_2;
+            var movie, response, _a, _b, _c, error_2, appContainer, moviesContainer;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
@@ -164,7 +164,9 @@ var MovieApp = /** @class */ (function () {
                         console.error("Error adding movie:", error_2);
                         return [3 /*break*/, 7];
                     case 7:
-                        this.nextMovie();
+                        appContainer = document.getElementById('app');
+                        moviesContainer = document.createElement('div');
+                        moviesContainer.className = 'movies';
                         return [2 /*return*/];
                 }
             });
@@ -190,7 +192,33 @@ var MovieApp = /** @class */ (function () {
     };
     return MovieApp;
 }());
-// Initialize the app
-document.addEventListener("DOMContentLoaded", function () {
-    new MovieApp("MovieContainer");
-});
+function fetchMovies() {
+    return __awaiter(this, void 0, void 0, function () {
+        var response, movies;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetch('http://localhost:3000/api/movies/get-all-movies')];
+                case 1:
+                    response = _a.sent();
+                    return [4 /*yield*/, response.json()];
+                case 2:
+                    movies = (_a.sent()).movies;
+                    return [2 /*return*/, movies];
+            }
+        });
+    });
+}
+function renderMovies() {
+    return __awaiter(this, void 0, void 0, function () {
+        var movies;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetchMovies()];
+                case 1:
+                    movies = _a.sent();
+                    moviesContainer.innerHTML = movies.map(function (movie) { return renderMovieCard(movie); }).join('');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
