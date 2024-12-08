@@ -10,8 +10,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-
-const dbUrl = "mongodb+srv://alexisv:vivalexxxa@cluster0.fqmwt.mongodb.net";
+const dbUrl = "mongodb+srv://alexis:Vivalexxxa@cluster0.yzu9p.mongodb.net";
 const database = "HandShake";
 
 mongoose.connect(`${dbUrl}/${database}`).then(()=>{
@@ -22,6 +21,9 @@ mongoose.connect(`${dbUrl}/${database}`).then(()=>{
 
 import userRoute from './routes/users/userRoute';
 app.use("/api/users", userRoute);
+
+import movieRoute from './routes/movies/movieRoute';
+app.use("/api/movies", movieRoute);
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`)
