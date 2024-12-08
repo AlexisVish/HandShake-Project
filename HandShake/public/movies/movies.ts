@@ -1,12 +1,4 @@
-interface IMovie {
-  _id: string;
-  name: string;
-  director: string;
-  year: number;
-  imageUrl: string;
-  genre: string;
-  description: string;
-}
+import {IMovie} from "/workspaces/HandShake-Project/HandShake/src/models/movies/movieModel"
 
 class MovieApp {
   private appContainer: HTMLElement;
@@ -62,8 +54,8 @@ class MovieApp {
     movieCard.className = "card";
 
     movieCard.innerHTML = `
-      <img src="${movie.imageUrl}" alt="${movie.name}" class="card__image">
-      <h2 class="card__name">${movie.name}</h2>
+      <img src="${movie.imageURL}" alt="${movie.title}" class="card__image">
+      <h2 class="card__name">${movie.title}</h2>
       <p class="card__genre"><strong>Genre:</strong> ${movie.genre}</p>
       <p class="card__director"><strong>Director:</strong> ${movie.director}</p>
       <p class="card__year"><strong>Year:</strong> ${movie.year}</p>
@@ -120,7 +112,7 @@ class MovieApp {
       );
 
       if (response.ok) {
-        alert(`Movie added to favorites: ${movie.name}`);
+        alert(`Movie added to favorites: ${movie.title}`);
       } else {
         console.error("Failed to add movie:", await response.text());
       }
@@ -128,8 +120,9 @@ class MovieApp {
       console.error("Error adding movie:", error);
     }
 
-    this.nextMovie();
-  }
+const appContainer = document.getElementById('app');
+const moviesContainer = document.createElement('div');
+moviesContainer.className = 'movies';
 
   // Handle No button click
   private handleNoClick(): void {
@@ -154,7 +147,19 @@ class MovieApp {
   }
 }
 
-// Initialize the app
-document.addEventListener("DOMContentLoaded", () => {
-  new MovieApp("MovieContainer");
-});
+async function fetchMovies() {
+    const response = await fetch('http://localhost:3000/api/movies/get-all-movies');
+    const { movies } = await response.json();
+    return movies;
+}
+
+async function renderMovies() {
+    const movies = await fetchMovies();
+    moviesContainer.innerHTML = movies.map(movie => renderMovieCard(movie)).join('');
+}
+
+
+        
+  
+
+
