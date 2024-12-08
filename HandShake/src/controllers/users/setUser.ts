@@ -4,61 +4,60 @@ export const secret = "Alexis";
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-export async function addUser(req: any, res: any) {
-  try {
-    const { id, name, email, phone, password } = req.body;
-    console.log(phone);
-    if (!name || !email || !phone || !password) {
-      return res.status(400).send({ error: "Please fill all the fields" });
-    }
+// export async function addUser(req: any, res: any) {
+//   try {
+//     const { id, name, email, phone, password } = req.body;
+//     console.log(phone);
+//     if (!name || !email || !phone || !password) {
+//       return res.status(400).send({ error: "Please fill all the fields" });
+//     }
     
-    const hashPassword = await bcrypt.hash(password, saltRounds);
-    const result = await User.create({
-      name,
-      phone,
-      email,
-    });
-    console.log(result);
-    if (!result) {
-      return res.status(400).send({ error: "No user info has been sent" });
-    }
-    return res.status(201).send({ message: "User has been successfully added!" });
-  } catch (error: any) {
-    console.error(error);
-    return res.status(500).send({ error: "Couldn't add the user" });
-  }
-}
+//     const hashPassword = await bcrypt.hash(password, saltRounds);
+//     const result = await User.create({
+//       name,
+//       phone,
+//       email,
+//     });
+//     console.log(result);
+//     if (!result) {
+//       return res.status(400).send({ error: "No user info has been sent" });
+//     }
+//     return res.status(201).send({ message: "User has been successfully added!" });
+//   } catch (error: any) {
+//     console.error(error);
+//     return res.status(500).send({ error: "Couldn't add the user" });
+//   }
+// }
 export async function register(req: any, res: any) {
   try {
-    const { id, name, email, phone, password } = req.body;
+    const { name, email, phone, password } = req.body;
 
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
-    }
+    // const existingUser = await User.findOne({ email });
+    // if (existingUser) {
+    //     return res.status(400).json({ message: "User already exists" });
+    // }
     
-    if (!id || !name || !email || !phone || !password) {
+    if ( !name || !email || !phone || !password ) {
       throw new Error("Please fill all the fields");
     }
     const hashPassword = await bcrypt.hash(password, saltRounds);
 
-    const newUser = await User.create({
-      id,
+    await User.create({
       name,
       email,
       phone,
       password:hashPassword,
     });
-    await newUser.save();
+    // await newUser.save();
 
-    const payload = { _id: newUser._id, email: newUser.email };
-    const token = jwt.encode(payload, secret)
+    // const payload = { email: newUser.email };
+    // const token = jwt.encode(payload, secret)
     return res
       .status(201)
-      .send({ message: "Registration successfully sompleted" });
+      .send({ message: "Registration successfully completed" });
   } catch (error) {
     console.error(error);
-    if (error.code = "11000") {
+    if ((error as any).code === "11000") {
       res.status(400).send({ error: "user already exists" });
     }
     console.error(error);

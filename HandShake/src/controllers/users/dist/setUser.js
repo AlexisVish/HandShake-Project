@@ -36,95 +36,76 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.login = exports.register = exports.addUser = exports.secret = void 0;
+exports.login = exports.register = exports.secret = void 0;
 var userModel_1 = require("../../models/users/userModel");
 var jwt_simple_1 = require("jwt-simple");
 exports.secret = "Alexis";
 var bcrypt = require("bcrypt");
 var saltRounds = 10;
-function addUser(req, res) {
+// export async function addUser(req: any, res: any) {
+//   try {
+//     const { id, name, email, phone, password } = req.body;
+//     console.log(phone);
+//     if (!name || !email || !phone || !password) {
+//       return res.status(400).send({ error: "Please fill all the fields" });
+//     }
+//     const hashPassword = await bcrypt.hash(password, saltRounds);
+//     const result = await User.create({
+//       name,
+//       phone,
+//       email,
+//     });
+//     console.log(result);
+//     if (!result) {
+//       return res.status(400).send({ error: "No user info has been sent" });
+//     }
+//     return res.status(201).send({ message: "User has been successfully added!" });
+//   } catch (error: any) {
+//     console.error(error);
+//     return res.status(500).send({ error: "Couldn't add the user" });
+//   }
+// }
+function register(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, id, name, email, phone, password, hashPassword, result, error_1;
+        var _a, name, email, phone, password, hashPassword, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
-                    _a = req.body, id = _a.id, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
-                    console.log(phone);
+                    _a = req.body, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
+                    // const existingUser = await User.findOne({ email });
+                    // if (existingUser) {
+                    //     return res.status(400).json({ message: "User already exists" });
+                    // }
                     if (!name || !email || !phone || !password) {
-                        return [2 /*return*/, res.status(400).send({ error: "Please fill all the fields" })];
-                    }
-                    return [4 /*yield*/, bcrypt.hash(password, saltRounds)];
-                case 1:
-                    hashPassword = _b.sent();
-                    return [4 /*yield*/, userModel_1["default"].create({
-                            name: name,
-                            phone: phone,
-                            email: email
-                        })];
-                case 2:
-                    result = _b.sent();
-                    console.log(result);
-                    if (!result) {
-                        return [2 /*return*/, res.status(400).send({ error: "No user info has been sent" })];
-                    }
-                    return [2 /*return*/, res.status(201).send({ message: "User has been successfully added!" })];
-                case 3:
-                    error_1 = _b.sent();
-                    console.error(error_1);
-                    return [2 /*return*/, res.status(500).send({ error: "Couldn't add the user" })];
-                case 4: return [2 /*return*/];
-            }
-        });
-    });
-}
-exports.addUser = addUser;
-function register(req, res) {
-    return __awaiter(this, void 0, void 0, function () {
-        var _a, id, name, email, phone, password, existingUser, hashPassword, newUser, payload, token, error_2;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _b.trys.push([0, 5, , 6]);
-                    _a = req.body, id = _a.id, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
-                    return [4 /*yield*/, userModel_1["default"].findOne({ email: email })];
-                case 1:
-                    existingUser = _b.sent();
-                    if (existingUser) {
-                        return [2 /*return*/, res.status(400).json({ message: "User already exists" })];
-                    }
-                    if (!id || !name || !email || !phone || !password) {
                         throw new Error("Please fill all the fields");
                     }
                     return [4 /*yield*/, bcrypt.hash(password, saltRounds)];
-                case 2:
+                case 1:
                     hashPassword = _b.sent();
                     return [4 /*yield*/, userModel_1["default"].create({
-                            id: id,
                             name: name,
                             email: email,
                             phone: phone,
                             password: hashPassword
                         })];
-                case 3:
-                    newUser = _b.sent();
-                    return [4 /*yield*/, newUser.save()];
-                case 4:
+                case 2:
                     _b.sent();
-                    payload = { _id: newUser._id, email: newUser.email };
-                    token = jwt_simple_1["default"].encode(payload, exports.secret);
+                    // await newUser.save();
+                    // const payload = { email: newUser.email };
+                    // const token = jwt.encode(payload, secret)
                     return [2 /*return*/, res
                             .status(201)
-                            .send({ message: "Registration successfully sompleted" })];
-                case 5:
-                    error_2 = _b.sent();
-                    console.error(error_2);
-                    if (error_2.code = "11000") {
+                            .send({ message: "Registration successfully completed" })];
+                case 3:
+                    error_1 = _b.sent();
+                    console.error(error_1);
+                    if (error_1.code === "11000") {
                         res.status(400).send({ error: "user already exists" });
                     }
-                    console.error(error_2);
+                    console.error(error_1);
                     return [2 /*return*/, res.status(500).send({ error: "Couldn't register" })];
-                case 6: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -132,7 +113,7 @@ function register(req, res) {
 exports.register = register;
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, email, password, user, match, token, error_3;
+        var _a, email, password, user, match, token, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -164,8 +145,8 @@ function login(req, res) {
                     });
                     return [2 /*return*/, res.status(200).send({ message: "Login was syccessfully completed!" })];
                 case 3:
-                    error_3 = _b.sent();
-                    console.error(error_3);
+                    error_2 = _b.sent();
+                    console.error(error_2);
                     return [2 /*return*/, res.status(500).send({ error: "Couldn't login." })];
                 case 4: return [2 /*return*/];
             }

@@ -7,6 +7,7 @@ export interface IMovie extends Document {
     director: string;
     rating: number;
     imageURL: string;
+    userId?: string;
 }
 
 const MovieSchema: Schema = new Schema({
@@ -16,6 +17,7 @@ const MovieSchema: Schema = new Schema({
     director: { type: String, required: true },
     rating: { type: Number, required: true },
     imageURL: { type: String, required: true },
+    userId: { type: String }
 
 });
 

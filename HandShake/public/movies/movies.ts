@@ -1,8 +1,9 @@
-import {IMovie} from "/workspaces/HandShake-Project/HandShake/src/models/movies/movieModel"
+import { IMovie } from "../../src/models/movies/movieModel";
 
 class MovieApp {
   private appContainer: HTMLElement;
   private movies: IMovie[] = [];
+  private myMovies: IMovie[] = [];
   private currentMovieIndex: number = 0;
 
   constructor(containerId: string) {
@@ -59,7 +60,7 @@ class MovieApp {
       <p class="card__genre"><strong>Genre:</strong> ${movie.genre}</p>
       <p class="card__director"><strong>Director:</strong> ${movie.director}</p>
       <p class="card__year"><strong>Year:</strong> ${movie.year}</p>
-      <p class="card__description"><strong>Description:</strong> ${movie.description}</p>
+      <p class="card__description"><strong>Description:</strong> ${movie.rating}</p>
     `;
 
     return movieCard;
@@ -97,32 +98,15 @@ class MovieApp {
   }
 
   // Handle Yes button click
-  private async handleYesClick(): Promise<void> {
+  private handleYesClick(): void {
     const movie = this.movies[this.currentMovieIndex];
-    try {
-      const response = await fetch(
-        "http://localhost:3000/api/movies/add-my-movie",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ movieId: movie._id }),
-        }
-      );
+    this.myMovies.push(movie);
+    this.nextMovie();
+  }
 
-      if (response.ok) {
-        alert(`Movie added to favorites: ${movie.title}`);
-      } else {
-        console.error("Failed to add movie:", await response.text());
-      }
-    } catch (error) {
-      console.error("Error adding movie:", error);
-    }
-
-const appContainer = document.getElementById('app');
-const moviesContainer = document.createElement('div');
-moviesContainer.className = 'movies';
+  // const appContainer = document.getElementById('app');
+  // const moviesContainer = document.createElement('div');
+  // moviesContainer.className = 'movies';
 
   // Handle No button click
   private handleNoClick(): void {
@@ -141,22 +125,58 @@ moviesContainer.className = 'movies';
 
   // Display a message when no more movies are available
   private displayNoMoviesMessage(): void {
+    this.sendMyMoviesToServer(); // Send movies to the server
     this.appContainer.innerHTML = `
       <p>No more movies to display. <a href="/home" class="home-link">Go to Home</a></p>
     `;
   }
+
+  // Send the collected movies to the server
+  private async sendMyMoviesToServer(): Promise<void> {
+    // Extract userId from cookies
+    const userId = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("userId="))
+      ?.split("=")[1];
+
+    if (!userId) {
+      console.error(
+        "User ID not found in cookies. Ensure the user is logged in."
+      );
+      return;
+    }
+
+    if (this.myMovies.length === 0) {
+      console.log("No movies to send to the server.");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/movies/set-my-movies",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, myMovies: this.myMovies }),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Movies successfully sent to the server.");
+      } else {
+        console.error("Failed to send movies:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error sending movies to the server:", error);
+    }
+  }
 }
 
-async function fetchMovies() {
-    const response = await fetch('http://localhost:3000/api/movies/get-all-movies');
-    const { movies } = await response.json();
-    return movies;
-}
-
-async function renderMovies() {
-    const movies = await fetchMovies();
-    moviesContainer.innerHTML = movies.map(movie => renderMovieCard(movie)).join('');
-}
+document.addEventListener("DOMContentLoaded", () => {
+  new MovieApp("MovieContainer");
+});
 
 
         
