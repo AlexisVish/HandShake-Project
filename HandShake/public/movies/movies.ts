@@ -1,17 +1,25 @@
-import { IMovie } from "../../src/models/movies/movieModel";
+interface IMovie {
+  title: string;
+  genre: string;
+  director: string;
+  year: number;
+  rating: string;
+  imageURL: string;
+}
 
 class MovieApp {
-  private appContainer: HTMLElement;
+  private movieContainer: HTMLElement;
   private movies: IMovie[] = [];
   private myMovies: IMovie[] = [];
   private currentMovieIndex: number = 0;
 
-  constructor(containerId: string) {
-    const container = document.getElementById(containerId);
+  constructor(container: HTMLElement) {
     if (!container) {
-      throw new Error("App container not found");
+      throw new Error(
+        "Movie container not found. Ensure the element exists in HTML and is loaded before the script runs."
+      );
     }
-    this.appContainer = container;
+    this.movieContainer = container;
     this.init();
   }
 
@@ -40,13 +48,13 @@ class MovieApp {
 
   // Render the current movie
   private renderMovie(): void {
-    this.appContainer.innerHTML = ""; // Clear the container
+    this.movieContainer.innerHTML = ""; // Clear the container
     const movie = this.movies[this.currentMovieIndex];
     const movieCard = this.createMovieCard(movie);
     const buttonsContainer = this.createButtons();
 
-    this.appContainer.appendChild(movieCard);
-    this.appContainer.appendChild(buttonsContainer);
+    this.movieContainer.appendChild(movieCard);
+    this.movieContainer.appendChild(buttonsContainer);
   }
 
   // Create the movie card
@@ -126,8 +134,13 @@ class MovieApp {
   // Display a message when no more movies are available
   private displayNoMoviesMessage(): void {
     this.sendMyMoviesToServer(); // Send movies to the server
-    this.appContainer.innerHTML = `
-      <p>No more movies to display. <a href="/home" class="home-link">Go to Home</a></p>
+    this.movieContainer.innerHTML = `
+      <p>No more movies to display.</p>
+      <h2>Selected movies:</h2>
+      <ul>
+        ${this.myMovies.map((movie) => `<li>${movie.title}</li>`).join("")}  
+      </ul> 
+      <a href="/home/home.html" class="home-link">Go to Home</a>
     `;
   }
 
@@ -175,10 +188,13 @@ class MovieApp {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  new MovieApp("MovieContainer");
+  const container = document.getElementById("movieContainer");
+  if (!container) {
+    console.error("Container not found!");
+    return;
+  }
+  new MovieApp(container as HTMLElement);
 });
-
-
         
   
 

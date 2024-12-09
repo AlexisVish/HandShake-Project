@@ -38,8 +38,8 @@ var LoginForm = /** @class */ (function () {
     function LoginForm() {
     }
     LoginForm.prototype.createForm = function () {
-        var form = document.createElement('form');
-        form.id = 'form';
+        var form = document.createElement("form");
+        form.id = "form";
         form.innerHTML = "\n      <div id='form__field'>\n          <label for='email' id='form__label'>E-mail:</label>\n          <input type='email' id='email' name='email' placeholder='Enter e-mail' required>\n      </div>\n      <div id='form__field'>\n          <label for='password' id='form__label'>Password:</label>\n          <input type='password' id='password' name='password' placeholder='Enter your password' required>\n      </div>\n      <div id='form__field'>\n          <button type='submit' id='form__button'>Login</button>\n      </div>\n      ";
         return form;
     };
@@ -59,7 +59,7 @@ var FormValidator = /** @class */ (function () {
 }());
 function submitLoginForm(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var form, formData, email, password, response, data, message, error_1;
+        var form, formData, email, password, response, message, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -67,18 +67,18 @@ function submitLoginForm(event) {
                     event.preventDefault();
                     form = event.target;
                     formData = new FormData(form);
-                    email = formData.get('email');
-                    password = formData.get('password');
+                    email = formData.get("email");
+                    password = formData.get("password");
                     if (!FormValidator.isValidEmail(email)) {
-                        throw new Error('Invalid email');
+                        throw new Error("Invalid email");
                     }
                     if (!FormValidator.isValidPassword(password)) {
-                        throw new Error('Password must be at least 6 characters');
+                        throw new Error("Password must be at least 6 characters");
                     }
-                    return [4 /*yield*/, fetch('/login', {
-                            method: 'POST',
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/users/login", {
+                            method: "POST",
                             headers: {
-                                'Content-Type': 'application/json'
+                                "Content-Type": "application/json"
                             },
                             body: JSON.stringify({ email: email, password: password })
                         })];
@@ -87,8 +87,10 @@ function submitLoginForm(event) {
                     if (!response.ok) return [3 /*break*/, 3];
                     return [4 /*yield*/, response.json()];
                 case 2:
-                    data = _a.sent();
-                    alert("Welcome, " + data.message);
+                    _a.sent();
+                    alert("Welcome, " + email);
+                    form.reset();
+                    window.location.href = "/meeting/meeting.html";
                     return [3 /*break*/, 5];
                 case 3: return [4 /*yield*/, response.text()];
                 case 4:
@@ -104,7 +106,7 @@ function submitLoginForm(event) {
         });
     });
 }
-var appContainer = document.getElementById('app');
+var appContainer = document.getElementById("app");
 var loginForm = new LoginForm().createForm();
-loginForm.addEventListener('submit', submitLoginForm);
+loginForm.addEventListener("submit", submitLoginForm);
 appContainer.append(loginForm);

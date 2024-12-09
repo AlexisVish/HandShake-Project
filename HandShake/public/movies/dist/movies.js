@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -35,17 +34,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-exports.__esModule = true;
 var MovieApp = /** @class */ (function () {
-    function MovieApp(containerId) {
+    function MovieApp(container) {
         this.movies = [];
         this.myMovies = [];
         this.currentMovieIndex = 0;
-        var container = document.getElementById(containerId);
         if (!container) {
-            throw new Error("App container not found");
+            throw new Error("Movie container not found. Ensure the element exists in HTML and is loaded before the script runs.");
         }
-        this.appContainer = container;
+        this.movieContainer = container;
         this.init();
     }
     // Initialize the app by fetching movies and rendering the first movie
@@ -94,12 +91,12 @@ var MovieApp = /** @class */ (function () {
     };
     // Render the current movie
     MovieApp.prototype.renderMovie = function () {
-        this.appContainer.innerHTML = ""; // Clear the container
+        this.movieContainer.innerHTML = ""; // Clear the container
         var movie = this.movies[this.currentMovieIndex];
         var movieCard = this.createMovieCard(movie);
         var buttonsContainer = this.createButtons();
-        this.appContainer.appendChild(movieCard);
-        this.appContainer.appendChild(buttonsContainer);
+        this.movieContainer.appendChild(movieCard);
+        this.movieContainer.appendChild(buttonsContainer);
     };
     // Create the movie card
     MovieApp.prototype.createMovieCard = function (movie) {
@@ -157,7 +154,7 @@ var MovieApp = /** @class */ (function () {
     // Display a message when no more movies are available
     MovieApp.prototype.displayNoMoviesMessage = function () {
         this.sendMyMoviesToServer(); // Send movies to the server
-        this.appContainer.innerHTML = "\n      <p>No more movies to display. <a href=\"/home\" class=\"home-link\">Go to Home</a></p>\n    ";
+        this.movieContainer.innerHTML = "\n      <p>No more movies to display.</p>\n      <h2>Selected movies:</h2>\n      <ul>\n        " + this.myMovies.map(function (movie) { return "<li>" + movie.title + "</li>"; }).join("") + "  \n      </ul> \n      <a href=\"/home/home.html\" class=\"home-link\">Go to Home</a>\n    ";
     };
     // Send the collected movies to the server
     MovieApp.prototype.sendMyMoviesToServer = function () {
@@ -213,5 +210,10 @@ var MovieApp = /** @class */ (function () {
     return MovieApp;
 }());
 document.addEventListener("DOMContentLoaded", function () {
-    new MovieApp("MovieContainer");
+    var container = document.getElementById("movieContainer");
+    if (!container) {
+        console.error("Container not found!");
+        return;
+    }
+    new MovieApp(container);
 });

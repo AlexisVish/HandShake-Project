@@ -143,22 +143,20 @@ var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
   }
 };
 
-exports.__esModule = true;
-
 var MovieApp =
 /** @class */
 function () {
-  function MovieApp(containerId) {
+  function MovieApp() {
     this.movies = [];
     this.myMovies = [];
     this.currentMovieIndex = 0;
-    var container = document.getElementById(containerId);
+    var container = document.getElementById("MovieContainer");
 
     if (!container) {
-      throw new Error("App container not found");
+      throw new Error("Movie container not found");
     }
 
-    this.appContainer = container;
+    this.movieContainer = container;
     this.init();
   } // Initialize the app by fetching movies and rendering the first movie
 
@@ -233,13 +231,13 @@ function () {
 
 
   MovieApp.prototype.renderMovie = function () {
-    this.appContainer.innerHTML = ""; // Clear the container
+    this.movieContainer.innerHTML = ""; // Clear the container
 
     var movie = this.movies[this.currentMovieIndex];
     var movieCard = this.createMovieCard(movie);
     var buttonsContainer = this.createButtons();
-    this.appContainer.appendChild(movieCard);
-    this.appContainer.appendChild(buttonsContainer);
+    this.movieContainer.appendChild(movieCard);
+    this.movieContainer.appendChild(buttonsContainer);
   }; // Create the movie card
 
 
@@ -306,7 +304,7 @@ function () {
   MovieApp.prototype.displayNoMoviesMessage = function () {
     this.sendMyMoviesToServer(); // Send movies to the server
 
-    this.appContainer.innerHTML = "\n      <p>No more movies to display. <a href=\"/home\" class=\"home-link\">Go to Home</a></p>\n    ";
+    this.movieContainer.innerHTML = "\n      <p>No more movies to display. <a href=\"/home/home.html\" class=\"home-link\">Go to Home</a></p>\n    ";
   }; // Send the collected movies to the server
 
 
@@ -402,5 +400,5 @@ function () {
 }();
 
 document.addEventListener("DOMContentLoaded", function () {
-  new MovieApp("MovieContainer");
+  new MovieApp();
 });

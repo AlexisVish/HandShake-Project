@@ -67,37 +67,36 @@ var saltRounds = 10;
 // }
 function register(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, name, email, phone, password, hashPassword, error_1;
+        var _a, name, email, phone, password, existingUser, hashPassword, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    _b.trys.push([0, 3, , 4]);
+                    _b.trys.push([0, 4, , 5]);
                     _a = req.body, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
-                    // const existingUser = await User.findOne({ email });
-                    // if (existingUser) {
-                    //     return res.status(400).json({ message: "User already exists" });
-                    // }
+                    return [4 /*yield*/, userModel_1.User.findOne({ email: email })];
+                case 1:
+                    existingUser = _b.sent();
+                    if (existingUser) {
+                        return [2 /*return*/, res.status(400).json({ message: "User already exists" })];
+                    }
                     if (!name || !email || !phone || !password) {
                         throw new Error("Please fill all the fields");
                     }
                     return [4 /*yield*/, bcrypt.hash(password, saltRounds)];
-                case 1:
+                case 2:
                     hashPassword = _b.sent();
-                    return [4 /*yield*/, userModel_1["default"].create({
+                    return [4 /*yield*/, userModel_1.User.create({
                             name: name,
                             email: email,
                             phone: phone,
                             password: hashPassword
                         })];
-                case 2:
+                case 3:
                     _b.sent();
-                    // await newUser.save();
-                    // const payload = { email: newUser.email };
-                    // const token = jwt.encode(payload, secret)
                     return [2 /*return*/, res
                             .status(201)
                             .send({ message: "Registration successfully completed" })];
-                case 3:
+                case 4:
                     error_1 = _b.sent();
                     console.error(error_1);
                     if (error_1.code === "11000") {
@@ -105,7 +104,7 @@ function register(req, res) {
                     }
                     console.error(error_1);
                     return [2 /*return*/, res.status(500).send({ error: "Couldn't register" })];
-                case 4: return [2 /*return*/];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -121,9 +120,8 @@ function login(req, res) {
                     _a = req.body, email = _a.email, password = _a.password;
                     if (!email || !password) {
                         throw new Error("Please fill all the fields!");
-                        return [2 /*return*/, res.status(400).send({ error: "Please fill all the fields!" })];
                     }
-                    return [4 /*yield*/, userModel_1["default"].findOne({ email: email })];
+                    return [4 /*yield*/, userModel_1.User.findOne({ email: email })];
                 case 1:
                     user = _b.sent();
                     if (!user) {
@@ -138,7 +136,7 @@ function login(req, res) {
                     if (!match) {
                         return [2 /*return*/, res.status(400).send({ error: "The password is incorrect" })];
                     }
-                    token = jwt_simple_1["default"].encode({ _id: user._id, email: user.email }, exports.secret);
+                    token = jwt_simple_1["default"].encode({ id: user._id, role: 'user' }, exports.secret);
                     res.cookie("user", token, {
                         httpOnly: true,
                         maxAge: 1000 * 60 * 60 * 24 * 7
