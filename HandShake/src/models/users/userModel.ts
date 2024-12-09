@@ -1,10 +1,11 @@
 import { model, Schema, Document } from "mongoose";
 
-interface IUser extends Document {
+export interface IUser extends Document {
   name: string;
   email: string;
   phone: string;
   password: string;
+  _id: string;
 }
 export const userSchema = new Schema({
   name: {
@@ -14,7 +15,8 @@ export const userSchema = new Schema({
   email: String,
   phone: String,
   password: String,
+  _id: String,
 });
 
-const User = model<IUser>("User", userSchema);
-export default User;
+export const User = model<IUser>("User", userSchema);
+

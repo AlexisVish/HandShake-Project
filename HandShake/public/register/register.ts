@@ -83,7 +83,7 @@ async function submitRegistrationForm(event: Event) {
     const data = await response.json();
     alert(`User ${data.name} registered successfully`);
     form.reset();
-    window.location.href = "/login";
+    window.location.href = "/login/login.html";
   } catch (error) {
     console.error("Registration failed:", error);
     alert("Registration failed");

@@ -1,4 +1,4 @@
-import User from "../../models/users/userModel";
+import { User } from "../../models/users/userModel";
 import jwt from "jwt-simple";
 export const secret = "Alexis";
 const bcrypt = require("bcrypt");
@@ -32,10 +32,10 @@ export async function register(req: any, res: any) {
   try {
     const { name, email, phone, password } = req.body;
 
-    // const existingUser = await User.findOne({ email });
-    // if (existingUser) {
-    //     return res.status(400).json({ message: "User already exists" });
-    // }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return res.status(400).json({ message: "User already exists" });
+    }
     
     if ( !name || !email || !phone || !password ) {
       throw new Error("Please fill all the fields");
@@ -48,10 +48,7 @@ export async function register(req: any, res: any) {
       phone,
       password:hashPassword,
     });
-    // await newUser.save();
-
-    // const payload = { email: newUser.email };
-    // const token = jwt.encode(payload, secret)
+ 
     return res
       .status(201)
       .send({ message: "Registration successfully completed" });
@@ -70,7 +67,6 @@ export async function login(req: any, res: any) {
     const { email, password } = req.body;
     if (!email || !password) {
       throw new Error("Please fill all the fields!");
-      return res.status(400).send({ error: "Please fill all the fields!" });
 
     }
     const user = await User.findOne({ email });
@@ -84,7 +80,7 @@ export async function login(req: any, res: any) {
       return res.status(400).send({ error: "The password is incorrect" });
     }
 
-    const token = jwt.encode({ _id: user._id, email: user.email }, secret);
+    const token = jwt.encode({ id: user._id, role: 'user' }, secret);
     res.cookie("user", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,

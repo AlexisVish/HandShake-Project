@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-const dbUrl = "mongodb+srv://alexis:Vivalexxxa@cluster0.yzu9p.mongodb.net";
+const dbUrl = "mongodb+srv://Yulia:r0MTDkJoo6ropL10@cluster0.gl27q.mongodb.net";
 const database = "HandShake";
 
 mongoose.connect(`${dbUrl}/${database}`).then(()=>{
