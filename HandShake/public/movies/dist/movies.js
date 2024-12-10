@@ -40,7 +40,7 @@ var MovieApp = /** @class */ (function () {
         this.myMovies = [];
         this.currentMovieIndex = 0;
         if (!container) {
-            throw new Error("Movie container not found. Ensure the element exists in HTML and is loaded before the script runs.");
+            throw new Error("Movie container not found.");
         }
         this.movieContainer = container;
         this.init();
@@ -102,7 +102,7 @@ var MovieApp = /** @class */ (function () {
     MovieApp.prototype.createMovieCard = function (movie) {
         var movieCard = document.createElement("div");
         movieCard.className = "card";
-        movieCard.innerHTML = "\n      <img src=\"" + movie.imageURL + "\" alt=\"" + movie.title + "\" class=\"card__image\">\n      <h2 class=\"card__name\">" + movie.title + "</h2>\n      <p class=\"card__genre\"><strong>Genre:</strong> " + movie.genre + "</p>\n      <p class=\"card__director\"><strong>Director:</strong> " + movie.director + "</p>\n      <p class=\"card__year\"><strong>Year:</strong> " + movie.year + "</p>\n      <p class=\"card__description\"><strong>Description:</strong> " + movie.rating + "</p>\n    ";
+        movieCard.innerHTML = "\n      <img src=\"" + movie.imageURL + "\" alt=\"" + movie.title + "\" class=\"card__image\">\n      <h2 class=\"card__info\">" + movie.title + "</h2>\n      <p class=\"card__info\"><strong>Genre:</strong> " + movie.genre + "</p>\n      <p class=\"card__info\"><strong>Director:</strong> " + movie.director + "</p>\n      <p class=\"card__info\"><strong>Year:</strong> " + movie.year + "</p>\n      <p class=\"card__info\"><strong>Rating:</strong> " + movie.rating + "</p>\n    ";
         return movieCard;
     };
     // Create Yes and No buttons
@@ -134,9 +134,6 @@ var MovieApp = /** @class */ (function () {
         this.myMovies.push(movie);
         this.nextMovie();
     };
-    // const appContainer = document.getElementById('app');
-    // const moviesContainer = document.createElement('div');
-    // moviesContainer.className = 'movies';
     // Handle No button click
     MovieApp.prototype.handleNoClick = function () {
         this.nextMovie();
@@ -158,48 +155,55 @@ var MovieApp = /** @class */ (function () {
     };
     // Send the collected movies to the server
     MovieApp.prototype.sendMyMoviesToServer = function () {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, Promise, function () {
-            var userId, response, _b, _c, _d, error_2;
-            return __generator(this, function (_e) {
-                switch (_e.label) {
+            var userId, meetingId, response, _c, _d, _e, error_2;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0:
                         userId = (_a = document.cookie
                             .split("; ")
-                            .find(function (row) { return row.startsWith("userId="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
-                        if (!userId) {
-                            console.error("User ID not found in cookies. Ensure the user is logged in.");
+                            .find(function (row) { return row.startsWith("user="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
+                        meetingId = (_b = document.cookie
+                            .split("; ")
+                            .find(function (row) { return row.startsWith("meetingId="); })) === null || _b === void 0 ? void 0 : _b.split("=")[1];
+                        if (!userId || !meetingId) {
+                            console.error("User ID or Meeting ID not found in cookies. Ensure the user is logged in.");
                             return [2 /*return*/];
                         }
                         if (this.myMovies.length === 0) {
                             console.log("No movies to send to the server.");
                             return [2 /*return*/];
                         }
-                        _e.label = 1;
+                        _f.label = 1;
                     case 1:
-                        _e.trys.push([1, 6, , 7]);
-                        return [4 /*yield*/, fetch("http://localhost:3000/api/movies/set-my-movies", {
+                        _f.trys.push([1, 6, , 7]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/movies/add-movies-to-meeting", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json"
                                 },
-                                body: JSON.stringify({ userId: userId, myMovies: this.myMovies })
+                                body: JSON.stringify({
+                                    userId: userId,
+                                    meetingId: meetingId,
+                                    myMovies: this.myMovies
+                                })
                             })];
                     case 2:
-                        response = _e.sent();
+                        response = _f.sent();
                         if (!response.ok) return [3 /*break*/, 3];
                         console.log("Movies successfully sent to the server.");
                         return [3 /*break*/, 5];
                     case 3:
-                        _c = (_b = console).error;
-                        _d = ["Failed to send movies:"];
+                        _d = (_c = console).error;
+                        _e = ["Failed to send movies:"];
                         return [4 /*yield*/, response.text()];
                     case 4:
-                        _c.apply(_b, _d.concat([_e.sent()]));
-                        _e.label = 5;
+                        _d.apply(_c, _e.concat([_f.sent()]));
+                        _f.label = 5;
                     case 5: return [3 /*break*/, 7];
                     case 6:
-                        error_2 = _e.sent();
+                        error_2 = _f.sent();
                         console.error("Error sending movies to the server:", error_2);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/];

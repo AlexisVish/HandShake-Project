@@ -16,7 +16,7 @@ class MovieApp {
   constructor(container: HTMLElement) {
     if (!container) {
       throw new Error(
-        "Movie container not found. Ensure the element exists in HTML and is loaded before the script runs."
+        "Movie container not found."
       );
     }
     this.movieContainer = container;
@@ -64,11 +64,11 @@ class MovieApp {
 
     movieCard.innerHTML = `
       <img src="${movie.imageURL}" alt="${movie.title}" class="card__image">
-      <h2 class="card__name">${movie.title}</h2>
-      <p class="card__genre"><strong>Genre:</strong> ${movie.genre}</p>
-      <p class="card__director"><strong>Director:</strong> ${movie.director}</p>
-      <p class="card__year"><strong>Year:</strong> ${movie.year}</p>
-      <p class="card__description"><strong>Description:</strong> ${movie.rating}</p>
+      <h2 class="card__info">${movie.title}</h2>
+      <p class="card__info"><strong>Genre:</strong> ${movie.genre}</p>
+      <p class="card__info"><strong>Director:</strong> ${movie.director}</p>
+      <p class="card__info"><strong>Year:</strong> ${movie.year}</p>
+      <p class="card__info"><strong>Rating:</strong> ${movie.rating}</p>
     `;
 
     return movieCard;
@@ -112,10 +112,6 @@ class MovieApp {
     this.nextMovie();
   }
 
-  // const appContainer = document.getElementById('app');
-  // const moviesContainer = document.createElement('div');
-  // moviesContainer.className = 'movies';
-
   // Handle No button click
   private handleNoClick(): void {
     this.nextMovie();
@@ -146,15 +142,20 @@ class MovieApp {
 
   // Send the collected movies to the server
   private async sendMyMoviesToServer(): Promise<void> {
-    // Extract userId from cookies
+    // Extract userId and meetingId from cookies
     const userId = document.cookie
       .split("; ")
-      .find((row) => row.startsWith("userId="))
+      .find((row) => row.startsWith("user="))
       ?.split("=")[1];
 
-    if (!userId) {
+    const meetingId = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("meetingId="))
+      ?.split("=")[1];
+
+    if (!userId || !meetingId) {
       console.error(
-        "User ID not found in cookies. Ensure the user is logged in."
+        "User ID or Meeting ID not found in cookies. Ensure the user is logged in."
       );
       return;
     }
@@ -166,13 +167,17 @@ class MovieApp {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/movies/set-my-movies",
+        "http://localhost:3000/api/movies/add-movies-to-meeting",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId, myMovies: this.myMovies }),
+          body: JSON.stringify({
+            userId,
+            meetingId,
+            myMovies: this.myMovies,
+          }),
         }
       );
 

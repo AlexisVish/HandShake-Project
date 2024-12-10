@@ -1,38 +1,49 @@
-import { Request, Response } from "express";
-import Movie, { IMovie } from "../../models/movies/movieModel";
+import MeetingModel from "../../models/meeting/meetingModel";
 
-export const saveUserMovies = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+// Controller to add movies to a meeting
+export async function addMoviesToMeeting(req: any, res: any) {
   try {
-    const { userId, movies } = req.body;
+    const { userId, meetingId, myMovies } = req.body;
 
-    // check if userId and movies array are provided
-    if (!userId || !Array.isArray(movies) || movies.length === 0) {
-      res
-        .status(400)
-        .json({ message: "User ID and movies array are required" });
-      return;
+    if (!userId || !meetingId || !myMovies || !Array.isArray(myMovies)) {
+      return res.status(400).json({ message: "Invalid input data." });
     }
 
-    // Save movies to the database
-    const moviesToSave: IMovie[] = movies.map((movie: Partial<IMovie>) => ({
-      ...movie, // unpack the movie object
-      userId, // add the userId to the movie object
-    })) as IMovie[]; // cast the array to IMovie[]
+    // Find the meeting by meetingId or create a new one if it doesn't exist
+    let meeting = await MeetingModel.findOne({ meetingId });
 
-    // Save the movies to the database
-    const savedMovies = await Movie.insertMany(moviesToSave);
+    if (!meeting) {
+      meeting = new MeetingModel({
+        meetingId,
+        participants: [],
+      });
+    }
 
-    res.status(201).json({
-      message: "Movies successfully saved",
-      savedMovies,
-    });
-  } catch (error) {
-    console.error("Error saving movies:", error);
+    // Check if the user already exists in the participants array
+    const existingParticipant = meeting.participants.find(
+      (participant) => participant.userId === userId
+    );
+    if (!meeting.participants) meeting.participants = [];
+    
+    if (existingParticipant) {
+      // Update the participant's liked movies
+      existingParticipant.likedMovies = myMovies;
+    } else {
+      // Add a new participant with their liked movies
+      meeting.participants.push({
+        userId,
+        likedMovies: myMovies,
+      });
+    }
+
+    // Save the updated meeting
+    await meeting.save();
+
     res
-      .status(500)
-      .json({ message: `Internal server error: ${(error as any).message}` });
+      .status(200)
+      .json({ message: "Movies added to the meeting successfully." });
+  } catch (error) {
+    console.error("Error adding movies to meeting:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
-};
+}

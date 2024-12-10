@@ -1,31 +1,36 @@
 import jwt from "jwt-simple";
-import { Request, Response } from "express";
 import { User } from "../../models/users/userModel";
-import { secret } from "./setUser"; // Убедитесь, что secret импортирован корректно
+import { secret } from "./setUser";
 
-export async function getUser(req: Request, res: Response): Promise<void> {
+export async function getUser(req: any, res: any): Promise<void> {
   try {
-    const { user } = req.cookies;
+    const { user: userToken, meetingId } = req.cookies; // get user token and meetingId from cookies
 
-    if (!user) {
+    if (!userToken) {
       return res
         .status(401)
         .json({ message: "Unauthorized: No token provided" });
     }
 
-    const decoded = jwt.verify(user, secret) as { id: string; role: string };
+    const decoded = jwt.decode(userToken, secret) as {
+      id: string;
+      role: string;
+    }; 
 
-    const foundUser = await User.findById(decoded.id);
+    const foundUser = await User.findById(decoded.id); // find user by id in the database
 
     if (!foundUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Send user data: id, email, name, and meetingId to the client
     res.status(200).json({
       message: "User retrieved successfully",
       user: {
         id: foundUser._id,
         email: foundUser.email,
+        name: foundUser.name, 
+        meetingId,
       },
     });
   } catch (error: any) {
