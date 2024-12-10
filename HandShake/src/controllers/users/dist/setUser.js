@@ -112,13 +112,13 @@ function register(req, res) {
 exports.register = register;
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, email, password, user, match, token, error_2;
+        var _a, email, password, meetingId, user, match, token, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
-                    _a = req.body, email = _a.email, password = _a.password;
-                    if (!email || !password) {
+                    _a = req.body, email = _a.email, password = _a.password, meetingId = _a.meetingId;
+                    if (!email || !password || !meetingId) {
                         throw new Error("Please fill all the fields!");
                     }
                     return [4 /*yield*/, userModel_1.User.findOne({ email: email })];
@@ -136,16 +136,31 @@ function login(req, res) {
                     if (!match) {
                         return [2 /*return*/, res.status(400).send({ error: "The password is incorrect" })];
                     }
-                    token = jwt_simple_1["default"].encode({ id: user._id, role: 'user' }, exports.secret);
+                    token = jwt_simple_1["default"].encode({ id: user._id, role: "user" }, exports.secret);
                     res.cookie("user", token, {
                         httpOnly: true,
                         maxAge: 1000 * 60 * 60 * 24 * 7
                     });
-                    return [2 /*return*/, res.status(200).send({ message: "Login was syccessfully completed!" })];
+                    res.cookie("meetingId", meetingId, {
+                        httpOnly: true,
+                        maxAge: 1000 * 60 * 60 * 24 * 7
+                    }); // add meetingId to cookies
+                    res.status(200).json({
+                        message: "Login successful",
+                        user: {
+                            id: user._id,
+                            email: user.email,
+                            meetingId: meetingId
+                        }
+                    });
+                    return [3 /*break*/, 4];
                 case 3:
                     error_2 = _b.sent();
-                    console.error(error_2);
-                    return [2 /*return*/, res.status(500).send({ error: "Couldn't login." })];
+                    console.error("Error in login:", error_2);
+                    res
+                        .status(500)
+                        .json({ message: "Internal server error: " + error_2.message });
+                    return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
         });

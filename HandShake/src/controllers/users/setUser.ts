@@ -64,10 +64,9 @@ export async function register(req: any, res: any) {
 
 export async function login(req: any, res: any) {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email, password, meetingId } = req.body;
+    if (!email || !password || !meetingId) {
       throw new Error("Please fill all the fields!");
-
     }
     const user = await User.findOne({ email });
     if (!user) {
@@ -80,14 +79,29 @@ export async function login(req: any, res: any) {
       return res.status(400).send({ error: "The password is incorrect" });
     }
 
-    const token = jwt.encode({ id: user._id, role: 'user' }, secret);
+    const token = jwt.encode({ id: user._id, role: "user" }, secret);
     res.cookie("user", token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    return res.status(200).send({ message: "Login was syccessfully completed!" });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).send({ error: "Couldn't login." });
+
+    res.cookie("meetingId", meetingId, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    }); // add meetingId to cookies
+
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user._id,
+        email: user.email,
+        meetingId, // send meetingId in the response
+      },
+    });
+  } catch (error: any) {
+    console.error("Error in login:", error);
+    res
+      .status(500)
+      .json({ message: `Internal server error: ${error.message}` });
   }
 }

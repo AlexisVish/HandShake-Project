@@ -1,4 +1,3 @@
-
 import jwt from "jwt-simple";
 import Movie from "../../models/movies/movieModel";
 import { secret } from "../users/setUser"; 
@@ -18,6 +17,7 @@ export async function getMyMovies(req: any, res: any): Promise<void> {
 
     // Find movies by userId
     const myMovies = await Movie.find({ userId: decoded.id });
+    
 
     if (!myMovies.length) {
       return res.status(404).json({ message: "No movies found for this user" });
