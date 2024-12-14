@@ -1,8 +1,8 @@
 "use strict";
 exports.__esModule = true;
+exports.db = void 0;
 var express_1 = require("express");
 var mongoose_1 = require("mongoose");
-var sqlite3_1 = require("sqlite3");
 var app = express_1["default"]();
 var port = 3000;
 app.use(express_1["default"].json());
@@ -18,14 +18,20 @@ mongoose_1["default"].connect(dbUrl + "/" + database).then(function () {
 })["catch"](function (err) {
     console.error(err);
 });
+var sqlite3_1 = require("sqlite3");
 //using SQL inner DB
-var db = new sqlite3_1["default"].Database(':memory:', function (err) {
+exports.db = new sqlite3_1["default"].Database(':memory:', function (err) {
     if (err) {
-        console.error('Error connecting to the database:', err.message);
+        console.error("Error connecting to the database:", err.message);
     }
     else {
-        console.log('Connected to the SQLite database.');
+        console.log("Connected to the SQLite database.");
     }
+});
+module.exports = exports.db;
+exports.db.serialize(function () {
+    exports.db.run("CREATE TABLE movies (\n      id INTEGER PRIMARY KEY AUTOINCREMENT,\n      title TEXT NOT NULL,\n      genre TEXT NOT NULL,\n      year INTEGER,\n      image_path TEXT\n    )");
+    exports.db.run("CREATE TABLE ourMovies(\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        user1_id INTEGER NOT NULL,\n        user2_id INTEGER NOT NULL,\n        movie_id INTEGER NOT NULL)");
 });
 var userRoute_1 = require("./routes/users/userRoute");
 app.use("/api/users", userRoute_1["default"]);
