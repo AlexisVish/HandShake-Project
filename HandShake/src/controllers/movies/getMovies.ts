@@ -1,7 +1,7 @@
 import { Movie } from "../../models/movies/movieModel";
 import { db } from "../../server";
 
-const movies: Movie[] = [
+const moviesArray: Movie[] = [
   {
     title: "The Shawshank Redemption",
     genre: "Drama",
@@ -131,36 +131,38 @@ const movies: Movie[] = [
 ];
 
 export function insertMovies(
-  movies: Movie[],
-  callback: (err: Error | null) => void
-) {
-  const stmt = db.prepare(
-    "INSERT INTO movies (title, genre, year, image_url) VALUES (?, ?, ?, ?)"
-  );
-  db.serialize(() => {
-    let hasError = false;
-    movies.forEach((movie) => {
-        if (hasError) return;
-
-      stmt.run(movie.title, movie.genre, movie.year, movie.image_url, (err) => {
+    movies: Movie[],
+    callback: (err: Error | null, message?: string) => void
+  ) {
+    const stmt = db.prepare(
+      `INSERT INTO movies (title, genre, year, image_url) VALUES (?, ?, ?, ?)`
+    );
+  
+    db.serialize(() => {
+      let hasError = false;
+  
+      movies.forEach((movie) => {
+        if (hasError) return; 
+  
+        stmt.run(movie.title, movie.genre, movie.year, movie.image_url, (err) => {
+          if (err) {
+            hasError = true;
+            return callback(err); 
+          }
+        });
+      });
+  
+      stmt.finalize((err) => {
         if (err) {
-            hasError=true;
-            stmt.finalize();
-            return callback(err);
+          callback(err); 
+        } else {
+          callback(null, "All movies were successfully inserted!"); 
         }
       });
     });
-    stmt.finalize((err) => {
-      if (err) {
-        callback(err);
-      } else {
-        callback(null);
-      }
-    });
-  });
-}
-
-insertMovies(movies, (err, message){
+  }
+  
+insertMovies(moviesArray, (err: Error | null, message?: string) => {
   if (err) {
     console.error("Error inserting movies:", err.message);
   } else {

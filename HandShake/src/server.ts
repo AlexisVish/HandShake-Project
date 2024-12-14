@@ -26,7 +26,7 @@ mongoose
 import sqlite3 from "sqlite3";
 
 //using SQL inner DB
-export const db = new sqlite3.Database(":memory:", (err) => {
+export const db = new sqlite3.Database("./db.sqlite", (err) => {
   if (err) {
     console.error("Error connecting to the database:", err.message);
   } else {
@@ -34,27 +34,27 @@ export const db = new sqlite3.Database(":memory:", (err) => {
   }
 });
 
-    db.run(`CREATE TABLE IF NOT EXISTS movies (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          title TEXT NOT NULL,
-          genre TEXT NOT NULL,
-          year INTEGER,
-          image_path TEXT
-        )`);
+db.run(`CREATE TABLE IF NOT EXISTS movies (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  genre TEXT NOT NULL,
+  year INTEGER,
+  image_url TEXT
+)`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS meetings (
+db.run(`CREATE TABLE IF NOT EXISTS meetings (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user1_id INTEGER NOT NULL,
-        user2_id INTEGER NOT NULL,
+        user2_id INTEGER NOT NULL
       )`);
-    db.run(`CREATE TABLE IF NOT EXISTS handShake (
+db.run(`CREATE TABLE IF NOT EXISTS handShake (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         meeting_id INTEGER NOT NULL,
         user1_id INTEGER NOT NULL,
-        user1_id INTEGER NOT NULL,
-        movie_id INTEGER NOT NULL,
+        user2_id INTEGER NOT NULL,
+        movie_id INTEGER NOT NULL
       )`);
-  
+
 module.exports = db;
 
 import userRoute from "./routes/users/userRoute";

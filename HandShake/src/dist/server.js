@@ -22,7 +22,7 @@ mongoose_1["default"]
 });
 var sqlite3_1 = require("sqlite3");
 //using SQL inner DB
-exports.db = new sqlite3_1["default"].Database(":memory:", function (err) {
+exports.db = new sqlite3_1["default"].Database("./db.sqlite", function (err) {
     if (err) {
         console.error("Error connecting to the database:", err.message);
     }
@@ -30,9 +30,9 @@ exports.db = new sqlite3_1["default"].Database(":memory:", function (err) {
         console.log("Connected to the SQLite database.");
     }
 });
-exports.db.run("CREATE TABLE IF NOT EXISTS movies (\n          id INTEGER PRIMARY KEY AUTOINCREMENT,\n          title TEXT NOT NULL,\n          genre TEXT NOT NULL,\n          year INTEGER,\n          image_path TEXT\n        )");
-exports.db.run("CREATE TABLE IF NOT EXISTS meetings (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        user1_id INTEGER NOT NULL,\n        user2_id INTEGER NOT NULL,\n      )");
-exports.db.run("CREATE TABLE IF NOT EXISTS handShake (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        meeting_id INTEGER NOT NULL,\n        user1_id INTEGER NOT NULL,\n        user1_id INTEGER NOT NULL,\n        movie_id INTEGER NOT NULL,\n      )");
+exports.db.run("CREATE TABLE IF NOT EXISTS movies (\n  id INTEGER PRIMARY KEY AUTOINCREMENT,\n  title TEXT NOT NULL,\n  genre TEXT NOT NULL,\n  year INTEGER,\n  image_url TEXT\n)");
+exports.db.run("CREATE TABLE IF NOT EXISTS meetings (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        user1_id INTEGER NOT NULL,\n        user2_id INTEGER NOT NULL\n      )");
+exports.db.run("CREATE TABLE IF NOT EXISTS handShake (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        meeting_id INTEGER NOT NULL,\n        user1_id INTEGER NOT NULL,\n        user2_id INTEGER NOT NULL,\n        movie_id INTEGER NOT NULL\n      )");
 module.exports = exports.db;
 var userRoute_1 = require("./routes/users/userRoute");
 app.use("/api/users", userRoute_1["default"]);
