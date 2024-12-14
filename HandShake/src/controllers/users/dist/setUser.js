@@ -119,10 +119,6 @@ function register(req, res) {
                 case 5:
                     error_2 = _b.sent();
                     console.error(error_2);
-                    if (error_2.code = "11000") {
-                        res.status(400).send({ error: "user already exists" });
-                    }
-                    console.error(error_2);
                     return [2 /*return*/, res.status(500).send({ error: "Couldn't register" })];
                 case 6: return [2 /*return*/];
             }

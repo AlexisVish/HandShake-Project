@@ -57,10 +57,7 @@ export async function register(req: any, res: any) {
       .status(201)
       .send({ message: "Registration successfully sompleted" });
   } catch (error) {
-    console.error(error);
-    if (error.code = "11000") {
-      res.status(400).send({ error: "user already exists" });
-    }
+ 
     console.error(error);
     return res.status(500).send({ error: "Couldn't register" });
   }
