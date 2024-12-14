@@ -29,10 +29,6 @@ exports.db = new sqlite3_1["default"].Database(':memory:', function (err) {
     }
 });
 module.exports = exports.db;
-exports.db.serialize(function () {
-    exports.db.run("CREATE TABLE movies (\n      id INTEGER PRIMARY KEY AUTOINCREMENT,\n      title TEXT NOT NULL,\n      genre TEXT NOT NULL,\n      year INTEGER,\n      image_path TEXT\n    )");
-    exports.db.run("CREATE TABLE ourMovies(\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        user1_id INTEGER NOT NULL,\n        user2_id INTEGER NOT NULL,\n        movie_id INTEGER NOT NULL)");
-});
 var userRoute_1 = require("./routes/users/userRoute");
 app.use("/api/users", userRoute_1["default"]);
 var movieRoute_1 = require("./routes/movies/movieRoute");

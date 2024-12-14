@@ -32,21 +32,6 @@ export const db = new sqlite3.Database(':memory:', (err) => {
 });
 module.exports = db;
 
-db.serialize(() => {
-  db.run(`CREATE TABLE movies (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      title TEXT NOT NULL,
-      genre TEXT NOT NULL,
-      year INTEGER,
-      image_path TEXT
-    )`);
-
-  db.run(`CREATE TABLE ourMovies(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user1_id INTEGER NOT NULL,
-        user2_id INTEGER NOT NULL,
-        movie_id INTEGER NOT NULL)`);
-});
 
 import userRoute from './routes/users/userRoute';
 app.use("/api/users", userRoute);
