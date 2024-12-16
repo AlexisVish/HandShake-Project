@@ -1,65 +1,65 @@
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .main {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin: 0;
-    background-color: #f7f7f7;
-    width: 100vw;
-    height: 100vh;
-    color: #333;
-  }
-  
+  margin: 0;
+  font-family: "Arial", sans-serif;
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0;
+  background-color: #f7f7f7;
+  width: 100vw;
+  height: 100vh;
+  color: #333;
+}
+
+h1 {
+  color: #fbc2e1;
+  font-size: 72px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fbc2e1;
+  color: white;
+  border: 1px solid #fbc2e1;
+  border-radius: 50px;
+  font-size: 20px;
+  margin: 15px;
+  padding: 12px 30px;
+  cursor: pointer;
+  transition: all 0.01s ease-in-out;
+}
+
+.btn:hover {
+  background-color: white;
+  color: #fbc2e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0px);
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
   h1 {
-    color: #fbc2e1; 
-    font-size: 72px;
-    font-weight: 700;
-    margin-bottom: 40px;
-    text-align: center;
+    font-size: 48px;
   }
-  
+
   .btn {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fbc2e1; 
-    color: white;
-    border: 1px solid #fbc2e1;
-    border-radius: 50px;
-    font-size: 20px;
-    margin: 15px;
-    padding: 12px 30px;
-    cursor: pointer;
-    transition: all 0.01s ease-in-out;
+    font-size: 18px;
+    padding: 10px 25px;
   }
-  
-  .btn:hover {
-    background-color: white;
-    color: #fbc2e1; 
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .btn:active {
-    transform: translateY(0px);
-    box-shadow: none;
-  }
-  
-  @media (max-width: 768px) {
-    h1 {
-      font-size: 48px;
-    }
-  
-    .btn {
-      font-size: 18px;
-      padding: 10px 25px;
-    }
-  }
+}
 
 #app {
   width: 100%;
@@ -80,8 +80,9 @@ body {
   padding: 40px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 25px;
-  width: 100%;
+  width: 500px;
 
   field {
     display: flex;
@@ -94,15 +95,16 @@ body {
     font-size: 18px;
     color: #555;
   }
-
+  
   input {
-    padding: 5px; 
-    height: 25px; 
+    margin: 5px;
+    padding-left: 1.5%;
+    margin: 5px;
+    height: 40px;
     border: 1px solid #fbc2e1;
-    border-radius: 15px;
+    border-radius: 10px;
     font-size: 20px;
-    width: 100%;
-    box-sizing: border-box;
+    width: 450px;
     transition: border-color 0.3s ease;
 
     &:focus {

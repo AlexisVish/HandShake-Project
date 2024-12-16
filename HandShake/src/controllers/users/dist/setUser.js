@@ -72,6 +72,7 @@ function register(req, res) {
                     _b.sent();
                     return [2 /*return*/, res
                             .status(201)
+<<<<<<< HEAD
                             .send({ message: "Registration successfully completed" })];
                 case 4:
                     error_1 = _b.sent();
@@ -80,6 +81,12 @@ function register(req, res) {
                         res.status(400).send({ error: "user already exists" });
                     }
                     console.error(error_1);
+=======
+                            .send({ message: "Registration successfully sompleted" })];
+                case 5:
+                    error_2 = _b.sent();
+                    console.error(error_2);
+>>>>>>> main
                     return [2 /*return*/, res.status(500).send({ error: "Couldn't register" })];
                 case 5: return [2 /*return*/];
             }

@@ -29,10 +29,14 @@ export async function register(req: any, res: any) {
       .status(201)
       .send({ message: "Registration successfully completed" });
   } catch (error) {
+<<<<<<< HEAD
     console.error(error);
     if ((error as any).code === "11000") {
       res.status(400).send({ error: "user already exists" });
     }
+=======
+ 
+>>>>>>> main
     console.error(error);
     return res.status(500).send({ error: "Couldn't register" });
   }
