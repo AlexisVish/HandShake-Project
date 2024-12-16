@@ -1,102 +1,154 @@
-interface IUser {
-  _id: string;
-  name: string;
+// Define the User interface
+interface iUser {
+  _id?: string; // Optional for newly created users
+  fullName: string;
   email: string;
   phone: string;
   password: string;
+  confirmPassword: string;
+  termsAgreed: boolean;
 }
 
-// class for creating registration form
-class RegisterForm {
-  createForm(): HTMLFormElement {
+// Create the main class
+class RegistrationForm {
+    [x: string]: any;
+  private appContainer: HTMLElement;
+  private formContainer: HTMLElement;
+
+  constructor(appId: string) {
+    this.appContainer = document.getElementById(appId) as HTMLElement;
+    if (!this.appContainer) {
+      throw new Error("App container not found");
+    }
+    this.formContainer = document.createElement("div");
+    this.formContainer.classList.add("form-container");
+    this.appContainer.appendChild(this.formContainer);
+  }
+
+  public renderForm(): void {
+    const formElement = this.createFormElement();
+    this.formContainer.appendChild(formElement);
+  }
+
+  // Create the form dynamically
+   private createFormElement(): HTMLFormElement {
     const form = document.createElement("form");
-    form.id = "form";
-    form.innerHTML = `
-      <div id="form__field">
-        <label for="name" id="form__label">Name:</label>
-        <input type="text" id="name" name="name" id="form__input" placeholder="Enter your name" required>
-      </div>
-      <div id="form__field">
-        <label for="email" id="form__label">Email:</label>
-        <input type="email" id="email" name="email" id="form__input" placeholder="Enter your email" required>
-      </div>
-      <div id="form__field">
-        <label for="phone" id="form__label">Phone:</label>
-        <input type="tel" id="phone" name="phone" id="form__input" placeholder="Enter your phone number" required>
-      </div>
-      <div id="form__field">
-        <label for="password" id="form__label">Password:</label>
-        <input type="password" id="password" name="password" id="form__input" placeholder="Enter your password" required>
-      </div>
-      <div id="form__field">
-        <button type="submit" id="form__button">Register</button>
-      </div>
-    `;
-    return form;
+    form.classList.add("register-form");
+
+    form.append(
+      this.createInputField("Full Name", "text", "fullName"),
+      this.createInputField("Email", "email", "email"),
+      this.createInputField("Phone", "tel", "phone"),
+      this.createInputField("Password", "password", "password"),
+      this.createInputField("Confirm Password", "password", "confirmPassword"),
+      this.createCheckboxField("I agree to the terms and conditions"),
+      this.createSubmitButton()
+    );
+    
+      form.addEventListener('submit', (event) => this.handleSubmit(event));
+      return form;
   }
-}
+    
+    // Create methods for creating fields
+    private createInputField(labelText: string, type: string, name: string): HTMLElement {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('form-group');
 
-// class for validating email and phone
-class FormValidator {
+        const label = document.createElement('label');
+        label.textContent = labelText;
+        label.setAttribute('for', 'name');
 
-  static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
+        const input = document.createElement('input');
+        input.type = type;
+        input.name = name;
+        input.id = name;
+        input.required = true;
 
-  static isValidPhone(phone: string): boolean {
-    const phoneRegex = /^[0-9]{10,15}$/;
-    return phoneRegex.test(phone);
-  }
-}
-
-// function for submitting registration form and sending data to the server
-async function submitRegistrationForm(event: Event) {
-  event.preventDefault();
-
-  const form = event.target as HTMLFormElement;
-  const formData = new FormData(form);
-
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const phone = formData.get("phone") as string;
-  const password = formData.get("password") as string;
-
-  if (!name || !email || !phone || !password) {
-    alert("All fields are required");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:3000/api/users/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, phone, password }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      alert(`Error: ${error.message}`);
-      return;
+        wrapper.append(label, input);
+        return wrapper;
     }
 
-    const data = await response.json();
-    alert(`User ${data.name} registered successfully`);
-    form.reset();
-    window.location.href = "/login/login.html";
-  } catch (error) {
-    console.error("Registration failed:", error);
-    alert("Registration failed");
-  }
+    private createCheckboxField(labelText: string): HTMLElement {
+        const wrapper = document.createElement('div');
+        wrapper.classList.add('form-group');
+
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.name = 'termsAgreed';
+        input.id = 'termsAgreed';
+        input.required = true;
+
+        const label = document.createElement('label');
+        label.textContent = labelText;
+        label.setAttribute('for', 'termsAgreed');
+
+        wrapper.append(input, label);
+        return wrapper;
+    }
+
+    private createSubmitButton(): HTMLElement {
+        const button = document.createElement('button');
+        button.type = 'submit';
+        button.textContent = 'Register';
+        button.classList.add('submit-button');
+        return button;
+    }
+
+    // Handle form submission
+    private handleSubmit(event: Event): void {
+        event.preventDefault();
+
+        const formData = new FormData(event.target as HTMLFormElement);
+        const user: iUser = {
+            fullName: formData.get('fullName') as string,
+            email: formData.get('email') as string,
+            phone: formData.get('phone') as string,
+            password: formData.get('password') as string,
+            confirmPassword: formData.get('confirmPassword') as string,
+            termsAgreed: !!formData.get('termsAgreed'),
+        };
+
+        if (this.validateData(user)) {
+            this.sendDataToServer(user);
+        } else {
+            alert('Validation faild. Please check your input.');
+        }
+    }
+
+    // Validate form data
+    private validateData(user: iUser): boolean {
+        if (user.password !== user.confirmPassword) {
+            alert('Passwords do not match');
+            return false;
+        }
+        return true;
+    }
+
+    // Send data to the server
+    private async sendDataToServer(user: iUser): Promise<void> {
+        try {
+            const response = await fetch('http://localhost:3000/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user),
+            });
+
+            if (!response.ok) {
+                throw new Error('Faild to register');
+            }
+
+            const data = await response.json();
+            alert(`Registration successful! Welcome ${data.fullName}!`);
+            this.form.resert()
+            
+        } catch (error) {
+            alert(error.message);
+        }
+    }  
 }
 
-// getting app container and adding registration form to it
-const appContainer = document.getElementById("app");
-
-if (appContainer) {
-  const form = new RegisterForm().createForm();
-  form.addEventListener("submit", submitRegistrationForm);
-  appContainer.appendChild(form);
-} else {
-  console.error("App container not found");
-}
+// Initialize the form
+document.addEventListener('DOMContentLoaded', () => {
+    const registerForm = new RegistrationForm('app');
+    registerForm.renderForm();
+});
