@@ -12,10 +12,6 @@ class LoginForm {
           <input type='password' id='password' name='password' placeholder='Enter your password' required>
       </div>
       <div id='form__field'>
-          <label for='meetingId' id='form__label'>Meeting ID:</label>
-          <input type='text' id='meetingId' name='meetingId' placeholder='Enter Meeting ID' required>
-      </div>
-      <div id='form__field'>
           <button type='submit' id='form__button'>Login</button>
       </div>
       `;
@@ -42,7 +38,6 @@ async function submitLoginForm(event: Event) {
     const formData = new FormData(form);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const meetingId = formData.get("meetingId") as string;
 
     if (!FormValidator.isValidEmail(email)) {
       throw new Error("Invalid email");
@@ -57,15 +52,26 @@ async function submitLoginForm(event: Event) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, meetingId }),
+      body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
-      await response.json();
+      // ask the server for user details
+      const userResponse = await fetch("http://localhost:3000/api/users/get-user", {
+        method: "GET",
+        credentials: "include", // for using cookies
+      });
 
-      alert(`Welcome, ${email}`);
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch user details");
+      }
+
+      const userData = await userResponse.json();
+
+      // greet the user by name and redirect to the meeting page
+      alert(`Welcome, ${userData.name}`);
       form.reset();
-      window.location.href = "/movies/movies.html";
+      window.location.href = "/meeting/meeting.html";
     } else {
       const message = await response.text();
       throw new Error(message);

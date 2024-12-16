@@ -4,30 +4,6 @@ export const secret = "Alexis";
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-// export async function addUser(req: any, res: any) {
-//   try {
-//     const { id, name, email, phone, password } = req.body;
-//     console.log(phone);
-//     if (!name || !email || !phone || !password) {
-//       return res.status(400).send({ error: "Please fill all the fields" });
-//     }
-    
-//     const hashPassword = await bcrypt.hash(password, saltRounds);
-//     const result = await User.create({
-//       name,
-//       phone,
-//       email,
-//     });
-//     console.log(result);
-//     if (!result) {
-//       return res.status(400).send({ error: "No user info has been sent" });
-//     }
-//     return res.status(201).send({ message: "User has been successfully added!" });
-//   } catch (error: any) {
-//     console.error(error);
-//     return res.status(500).send({ error: "Couldn't add the user" });
-//   }
-// }
 export async function register(req: any, res: any) {
   try {
     const { name, email, phone, password } = req.body;
@@ -64,8 +40,8 @@ export async function register(req: any, res: any) {
 
 export async function login(req: any, res: any) {
   try {
-    const { email, password, meetingId } = req.body;
-    if (!email || !password || !meetingId) {
+    const { email, password } = req.body;
+    if (!email || !password) {
       throw new Error("Please fill all the fields!");
     }
     const user = await User.findOne({ email });
@@ -85,17 +61,11 @@ export async function login(req: any, res: any) {
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 
-    res.cookie("meetingId", meetingId, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    }); // add meetingId to cookies
-
     res.status(200).json({
       message: "Login successful",
       user: {
         id: user._id,
         email: user.email,
-        meetingId, // send meetingId in the response
       },
     });
   } catch (error: any) {

@@ -40,7 +40,7 @@ var LoginForm = /** @class */ (function () {
     LoginForm.prototype.createForm = function () {
         var form = document.createElement("form");
         form.id = "form";
-        form.innerHTML = "\n      <div id='form__field'>\n          <label for='email' id='form__label'>E-mail:</label>\n          <input type='email' id='email' name='email' placeholder='Enter e-mail' required>\n      </div>\n      <div id='form__field'>\n          <label for='password' id='form__label'>Password:</label>\n          <input type='password' id='password' name='password' placeholder='Enter your password' required>\n      </div>\n      <div id='form__field'>\n          <label for='meetingId' id='form__label'>Meeting ID:</label>\n          <input type='text' id='meetingId' name='meetingId' placeholder='Enter Meeting ID' required>\n      </div>\n      <div id='form__field'>\n          <button type='submit' id='form__button'>Login</button>\n      </div>\n      ";
+        form.innerHTML = "\n      <div id='form__field'>\n          <label for='email' id='form__label'>E-mail:</label>\n          <input type='email' id='email' name='email' placeholder='Enter e-mail' required>\n      </div>\n      <div id='form__field'>\n          <label for='password' id='form__label'>Password:</label>\n          <input type='password' id='password' name='password' placeholder='Enter your password' required>\n      </div>\n      <div id='form__field'>\n          <button type='submit' id='form__button'>Login</button>\n      </div>\n      ";
         return form;
     };
     return LoginForm;
@@ -59,17 +59,16 @@ var FormValidator = /** @class */ (function () {
 }());
 function submitLoginForm(event) {
     return __awaiter(this, void 0, void 0, function () {
-        var form, formData, email, password, meetingId, response, message, error_1;
+        var form, formData, email, password, response, userResponse, userData, message, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 6, , 7]);
+                    _a.trys.push([0, 7, , 8]);
                     event.preventDefault();
                     form = event.target;
                     formData = new FormData(form);
                     email = formData.get("email");
                     password = formData.get("password");
-                    meetingId = formData.get("meetingId");
                     if (!FormValidator.isValidEmail(email)) {
                         throw new Error("Invalid email");
                     }
@@ -81,28 +80,38 @@ function submitLoginForm(event) {
                             headers: {
                                 "Content-Type": "application/json"
                             },
-                            body: JSON.stringify({ email: email, password: password, meetingId: meetingId })
+                            body: JSON.stringify({ email: email, password: password })
                         })];
                 case 1:
                     response = _a.sent();
-                    if (!response.ok) return [3 /*break*/, 3];
-                    return [4 /*yield*/, response.json()];
+                    if (!response.ok) return [3 /*break*/, 4];
+                    return [4 /*yield*/, fetch("http://localhost:3000/api/users/get-user", {
+                            method: "GET",
+                            credentials: "include"
+                        })];
                 case 2:
-                    _a.sent();
-                    alert("Welcome, " + email);
+                    userResponse = _a.sent();
+                    if (!userResponse.ok) {
+                        throw new Error("Failed to fetch user details");
+                    }
+                    return [4 /*yield*/, userResponse.json()];
+                case 3:
+                    userData = _a.sent();
+                    // greet the user by name and redirect to the meeting page
+                    alert("Welcome, " + userData.name);
                     form.reset();
-                    window.location.href = "/movies/movies.html";
-                    return [3 /*break*/, 5];
-                case 3: return [4 /*yield*/, response.text()];
-                case 4:
+                    window.location.href = "/meeting/meeting.html";
+                    return [3 /*break*/, 6];
+                case 4: return [4 /*yield*/, response.text()];
+                case 5:
                     message = _a.sent();
                     throw new Error(message);
-                case 5: return [3 /*break*/, 7];
-                case 6:
+                case 6: return [3 /*break*/, 8];
+                case 7:
                     error_1 = _a.sent();
                     alert(error_1.message);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 8];
+                case 8: return [2 /*return*/];
             }
         });
     });

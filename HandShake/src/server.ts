@@ -22,8 +22,7 @@ mongoose.connect(`${dbUrl}/${database}`).then(()=>{
 import userRoute from './routes/users/userRoute';
 app.use("/api/users", userRoute);
 
-import movieRoute from './routes/movies/movieRoute';
-app.use("/api/movies", movieRoute);
+
 
 app.listen(port, () => {
     console.log(`App listening on port ${port}`)

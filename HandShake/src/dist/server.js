@@ -18,8 +18,6 @@ mongoose_1["default"].connect(dbUrl + "/" + database).then(function () {
 });
 var userRoute_1 = require("./routes/users/userRoute");
 app.use("/api/users", userRoute_1["default"]);
-var movieRoute_1 = require("./routes/movies/movieRoute");
-app.use("/api/movies", movieRoute_1["default"]);
 app.listen(port, function () {
     console.log("App listening on port " + port);
 });

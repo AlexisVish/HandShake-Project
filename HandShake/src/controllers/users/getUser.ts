@@ -4,7 +4,7 @@ import { secret } from "./setUser";
 
 export async function getUser(req: any, res: any): Promise<void> {
   try {
-    const { user: userToken, meetingId } = req.cookies; // get user token and meetingId from cookies
+    const { user: userToken } = req.cookies; // get user token from cookies
 
     if (!userToken) {
       return res
@@ -17,26 +17,15 @@ export async function getUser(req: any, res: any): Promise<void> {
       role: string;
     }; 
 
-    const foundUser = await User.findById(decoded.id); // find user by id in the database
+    const foundUser = await User.findById(decoded.id).select("name email"); // выберите имя и email из базы данных
 
     if (!foundUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Send user data: id, email, name, and meetingId to the client
-    res.status(200).json({
-      message: "User retrieved successfully",
-      user: {
-        id: foundUser._id,
-        email: foundUser.email,
-        name: foundUser.name, 
-        meetingId,
-      },
-    });
-  } catch (error: any) {
-    console.error("Error in GetUser:", error);
-    res
-      .status(500)
-      .json({ message: `Internal server error: ${error.message}` });
+    res.status(200).json({ name: foundUser.name, email: foundUser.email });
+  } catch (error) {
+    console.error("Error in getUser:", error);
+    res.status(500).json({ message: "Failed to get user" });
   }
 }
