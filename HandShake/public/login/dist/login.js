@@ -34,89 +34,121 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+// Create the main Login class
 var LoginForm = /** @class */ (function () {
-    function LoginForm() {
+    function LoginForm(appId) {
+        this.appContainer = document.getElementById(appId);
+        if (!this.appContainer) {
+            throw new Error("App container not found");
+        }
+        this.formContainer = document.createElement("div");
+        this.formContainer.classList.add("form-container");
+        this.appContainer.appendChild(this.formContainer);
     }
-    LoginForm.prototype.createForm = function () {
+    LoginForm.prototype.renderForm = function () {
+        this.formElement = this.createFormElement();
+        this.formContainer.appendChild(this.formElement);
+    };
+    // Create the form dynamically
+    LoginForm.prototype.createFormElement = function () {
+        var _this = this;
         var form = document.createElement("form");
-        form.id = "form";
-        form.innerHTML = "\n      <div id='form__field'>\n          <label for='email' id='form__label'>E-mail:</label>\n          <input type='email' id='email' name='email' placeholder='Enter e-mail' required>\n      </div>\n      <div id='form__field'>\n          <label for='password' id='form__label'>Password:</label>\n          <input type='password' id='password' name='password' placeholder='Enter your password' required>\n      </div>\n      <div id='form__field'>\n          <button type='submit' id='form__button'>Login</button>\n      </div>\n      ";
+        form.classList.add("register-form"); // Reuse same styles as Register
+        // Heading
+        var heading = document.createElement("h1");
+        heading.textContent = "Login";
+        heading.classList.add("form-title");
+        form.append(heading, this.createInputField("Email", "email", "email"), this.createInputField("Password", "password", "password"), this.createCheckboxField("Remember Me"), this.createSubmitButton());
+        form.addEventListener("submit", function (event) { return _this.handleSubmit(event); });
         return form;
+    };
+    LoginForm.prototype.createInputField = function (labelText, type, name) {
+        var wrapper = document.createElement("div");
+        wrapper.classList.add("form-group");
+        var label = document.createElement("label");
+        label.textContent = labelText;
+        label.setAttribute("for", name);
+        var input = document.createElement("input");
+        input.type = type;
+        input.name = name;
+        input.id = name;
+        input.required = true;
+        wrapper.append(label, input);
+        return wrapper;
+    };
+    LoginForm.prototype.createCheckboxField = function (labelText) {
+        var wrapper = document.createElement("div");
+        wrapper.classList.add("checkbox-group");
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.name = "rememberMe";
+        input.id = "rememberMe";
+        var label = document.createElement("label");
+        label.textContent = labelText;
+        label.setAttribute("for", "rememberMe");
+        wrapper.append(input, label);
+        return wrapper;
+    };
+    LoginForm.prototype.createSubmitButton = function () {
+        var button = document.createElement("button");
+        button.type = "submit";
+        button.textContent = "Login";
+        button.classList.add("submit-button");
+        return button;
+    };
+    // Handle form submission
+    LoginForm.prototype.handleSubmit = function (event) {
+        event.preventDefault();
+        var formData = new FormData(event.target);
+        var user = {
+            email: formData.get("email"),
+            password: formData.get("password"),
+            rememberMe: !!formData.get("rememberMe")
+        };
+        this.sendDataToServer(user);
+    };
+    // Send data to the server
+    LoginForm.prototype.sendDataToServer = function (user) {
+        return __awaiter(this, void 0, Promise, function () {
+            var response, data, error_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, fetch("http://localhost:3000/api/users/login", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify(user),
+                                credentials: "include"
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        if (!response.ok) {
+                            throw new Error("Login failed. Please check your credentials.");
+                        }
+                        return [4 /*yield*/, response.json()];
+                    case 2:
+                        data = _a.sent();
+                        // Save token if Remember Me is checked
+                        if (user.rememberMe && data.token) {
+                            localStorage.setItem("authToken", data.token); // Save token for client-side use
+                        }
+                        alert("Welcome " + data.user.fullName + "!");
+                        window.location.href = "/meeting/meeting.html"; // Redirect after login
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _a.sent();
+                        alert(error_1.message);
+                        return [3 /*break*/, 4];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
     };
     return LoginForm;
 }());
-var FormValidator = /** @class */ (function () {
-    function FormValidator() {
-    }
-    FormValidator.isValidEmail = function (email) {
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-    FormValidator.isValidPassword = function (password) {
-        return password.length >= 6;
-    };
-    return FormValidator;
-}());
-function submitLoginForm(event) {
-    return __awaiter(this, void 0, void 0, function () {
-        var form, formData, email, password, response, userResponse, userData, message, error_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 7, , 8]);
-                    event.preventDefault();
-                    form = event.target;
-                    formData = new FormData(form);
-                    email = formData.get("email");
-                    password = formData.get("password");
-                    if (!FormValidator.isValidEmail(email)) {
-                        throw new Error("Invalid email");
-                    }
-                    if (!FormValidator.isValidPassword(password)) {
-                        throw new Error("Password must be at least 6 characters");
-                    }
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/users/login", {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({ email: email, password: password })
-                        })];
-                case 1:
-                    response = _a.sent();
-                    if (!response.ok) return [3 /*break*/, 4];
-                    return [4 /*yield*/, fetch("http://localhost:3000/api/users/get-user", {
-                            method: "GET",
-                            credentials: "include"
-                        })];
-                case 2:
-                    userResponse = _a.sent();
-                    if (!userResponse.ok) {
-                        throw new Error("Failed to fetch user details");
-                    }
-                    return [4 /*yield*/, userResponse.json()];
-                case 3:
-                    userData = _a.sent();
-                    // greet the user by name and redirect to the meeting page
-                    alert("Welcome, " + userData.name);
-                    form.reset();
-                    window.location.href = "/meeting/meeting.html";
-                    return [3 /*break*/, 6];
-                case 4: return [4 /*yield*/, response.text()];
-                case 5:
-                    message = _a.sent();
-                    throw new Error(message);
-                case 6: return [3 /*break*/, 8];
-                case 7:
-                    error_1 = _a.sent();
-                    alert(error_1.message);
-                    return [3 /*break*/, 8];
-                case 8: return [2 /*return*/];
-            }
-        });
-    });
-}
-var appContainer = document.getElementById("app");
-var loginForm = new LoginForm().createForm();
-loginForm.addEventListener("submit", submitLoginForm);
-appContainer.append(loginForm);
+// Initialize the Login form
+document.addEventListener("DOMContentLoaded", function () {
+    var loginForm = new LoginForm("app");
+    loginForm.renderForm();
+});

@@ -2,6 +2,9 @@
 exports.__esModule = true;
 var express_1 = require("express");
 var setUser_1 = require("../../controllers/users/setUser");
+var getUser_1 = require("../../controllers/users/getUser");
 var router = express_1["default"].Router();
 router.post("/register", setUser_1.register);
+router.post("/login", setUser_1.login);
+router.get("/get-user", getUser_1.getUser);
 exports["default"] = router;

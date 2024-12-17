@@ -36,20 +36,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.register = exports.secret = void 0;
+exports.login = exports.register = void 0;
+var dotenv_1 = require("dotenv");
+dotenv_1["default"].config();
+var jwt_simple_1 = require("jwt-simple");
 var bcrypt_1 = require("bcrypt");
 var userModel_1 = require("../../models/users/userModel");
-var saltRounds = 10;
-exports.secret = '1234';
+var secret = process.env.SECRET_KEY; // Secret key from .env
+var saltRounds = parseInt(process.env.SALT_ROUNDS || "10"); // Salt rounds from .env
+// Register controller
 function register(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, fullName, email, phone, password, confirmPassword, termsAgreed, existingUser, hashedPassword, error_1;
+        var _a, fullName, email, phone, password, confirmPassword, termsAgreed, existingUser, hashedPassword, newUser, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 4, , 5]);
                     _a = req.body, fullName = _a.fullName, email = _a.email, phone = _a.phone, password = _a.password, confirmPassword = _a.confirmPassword, termsAgreed = _a.termsAgreed;
-                    if (!fullName || !email || !phone || !password || !confirmPassword || !termsAgreed) {
+                    if (!fullName ||
+                        !email ||
+                        !phone ||
+                        !password ||
+                        !confirmPassword ||
+                        !termsAgreed) {
                         res.status(400).json({ error: "All fields are required" });
                         return [2 /*return*/];
                     }
@@ -61,7 +70,7 @@ function register(req, res) {
                 case 1:
                     existingUser = _b.sent();
                     if (existingUser) {
-                        res.status(400).json({ error: 'User with this email already exists' });
+                        res.status(400).json({ error: "User with this email already exists" });
                         return [2 /*return*/];
                     }
                     return [4 /*yield*/, bcrypt_1["default"].hash(password, saltRounds)];
@@ -75,16 +84,71 @@ function register(req, res) {
                             termsAgreed: termsAgreed
                         })];
                 case 3:
-                    _b.sent();
-                    return [2 /*return*/, res.status(201).json({ message: 'User registered successfully' })];
+                    newUser = _b.sent();
+                    return [2 /*return*/, res.status(201).json({
+                            message: "User registered successfully",
+                            user: newUser
+                        })];
                 case 4:
                     error_1 = _b.sent();
                     console.error(error_1);
-                    return [2 /*return*/, res.status(500).json({ error: 'Internal server error' })];
+                    return [2 /*return*/, res.status(500).json({ error: "Internal server error" })];
                 case 5: return [2 /*return*/];
             }
         });
     });
 }
 exports.register = register;
-;
+// Login controller
+function login(req, res) {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, email, password, rememberMe, user, isPasswordValid, token, error_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 3, , 4]);
+                    _a = req.body, email = _a.email, password = _a.password, rememberMe = _a.rememberMe;
+                    // Validate required fields
+                    if (!email || !password) {
+                        return [2 /*return*/, res.status(400).json({ error: "Email and password are required" })];
+                    }
+                    return [4 /*yield*/, userModel_1.User.findOne({ email: email })];
+                case 1:
+                    user = _b.sent();
+                    if (!user) {
+                        return [2 /*return*/, res.status(401).json({ error: "Invalid email or password" })];
+                    }
+                    return [4 /*yield*/, bcrypt_1["default"].compare(password, user.password)];
+                case 2:
+                    isPasswordValid = _b.sent();
+                    if (!isPasswordValid) {
+                        return [2 /*return*/, res.status(401).json({ error: "Invalid email or password" })];
+                    }
+                    token = jwt_simple_1["default"].encode({
+                        id: user._id,
+                        exp: Math.floor(Date.now() / 1000) +
+                            (rememberMe ? 7 * 24 * 60 * 60 : 60 * 60)
+                    }, secret);
+                    // Set token in HTTP-only cookie
+                    res.cookie("token", token, {
+                        httpOnly: true,
+                        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000
+                    });
+                    // Send response to client
+                    return [2 /*return*/, res.status(200).json({
+                            message: "Login successful",
+                            user: {
+                                fullName: user.fullName
+                            },
+                            token: token
+                        })];
+                case 3:
+                    error_2 = _b.sent();
+                    console.error(error_2);
+                    return [2 /*return*/, res.status(500).json({ error: "Internal server error" })];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.login = login;

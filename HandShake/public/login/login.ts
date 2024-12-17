@@ -1,87 +1,145 @@
+// Define the User interface for Login
+interface iLoginUser {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+// Create the main Login class
 class LoginForm {
-  createForm(): HTMLFormElement {
+  private appContainer: HTMLElement;
+  private formContainer: HTMLElement;
+  private formElement: HTMLFormElement;
+
+  constructor(appId: string) {
+    this.appContainer = document.getElementById(appId) as HTMLElement;
+    if (!this.appContainer) {
+      throw new Error("App container not found");
+    }
+    this.formContainer = document.createElement("div");
+    this.formContainer.classList.add("form-container");
+    this.appContainer.appendChild(this.formContainer);
+  }
+
+  public renderForm(): void {
+    this.formElement = this.createFormElement();
+    this.formContainer.appendChild(this.formElement);
+  }
+
+  // Create the form dynamically
+  private createFormElement(): HTMLFormElement {
     const form = document.createElement("form");
-    form.id = "form";
-    form.innerHTML = `
-      <div id='form__field'>
-          <label for='email' id='form__label'>E-mail:</label>
-          <input type='email' id='email' name='email' placeholder='Enter e-mail' required>
-      </div>
-      <div id='form__field'>
-          <label for='password' id='form__label'>Password:</label>
-          <input type='password' id='password' name='password' placeholder='Enter your password' required>
-      </div>
-      <div id='form__field'>
-          <button type='submit' id='form__button'>Login</button>
-      </div>
-      `;
+    form.classList.add("register-form"); // Reuse same styles as Register
+
+    // Heading
+    const heading = document.createElement("h1");
+    heading.textContent = "Login";
+    heading.classList.add("form-title");
+
+    form.append(
+      heading,
+      this.createInputField("Email", "email", "email"),
+      this.createInputField("Password", "password", "password"),
+      this.createCheckboxField("Remember Me"),
+      this.createSubmitButton()
+    );
+
+    form.addEventListener("submit", (event) => this.handleSubmit(event));
     return form;
   }
-}
 
-class FormValidator {
-  static isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+  private createInputField(
+    labelText: string,
+    type: string,
+    name: string
+  ): HTMLElement {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("form-group");
+
+    const label = document.createElement("label");
+    label.textContent = labelText;
+    label.setAttribute("for", name);
+
+    const input = document.createElement("input");
+    input.type = type;
+    input.name = name;
+    input.id = name;
+    input.required = true;
+
+    wrapper.append(label, input);
+    return wrapper;
   }
 
-  static isValidPassword(password: string): boolean {
-    return password.length >= 6;
-  }
-}
+  private createCheckboxField(labelText: string): HTMLElement {
+    const wrapper = document.createElement("div");
+    wrapper.classList.add("checkbox-group");
 
-async function submitLoginForm(event: Event) {
-  try {
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.name = "rememberMe";
+    input.id = "rememberMe";
+
+    const label = document.createElement("label");
+    label.textContent = labelText;
+    label.setAttribute("for", "rememberMe");
+
+    wrapper.append(input, label);
+    return wrapper;
+  }
+
+  private createSubmitButton(): HTMLElement {
+    const button = document.createElement("button");
+    button.type = "submit";
+    button.textContent = "Login";
+    button.classList.add("submit-button");
+    return button;
+  }
+
+  // Handle form submission
+  private handleSubmit(event: Event): void {
     event.preventDefault();
 
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    const formData = new FormData(event.target as HTMLFormElement);
+    const user: iLoginUser = {
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      rememberMe: !!formData.get("rememberMe"),
+    };
 
-    if (!FormValidator.isValidEmail(email)) {
-      throw new Error("Invalid email");
-    }
+    this.sendDataToServer(user);
+  }
 
-    if (!FormValidator.isValidPassword(password)) {
-      throw new Error("Password must be at least 6 characters");
-    }
-
-    const response = await fetch("http://localhost:3000/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      // ask the server for user details
-      const userResponse = await fetch("http://localhost:3000/api/users/get-user", {
-        method: "GET",
-        credentials: "include", // for using cookies
+  // Send data to the server
+  private async sendDataToServer(user: iLoginUser): Promise<void> {
+    try {
+      const response = await fetch("http://localhost:3000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+        credentials: "include", // allow cookies in the request
       });
 
-      if (!userResponse.ok) {
-        throw new Error("Failed to fetch user details");
+      if (!response.ok) {
+        throw new Error("Login failed. Please check your credentials.");
       }
 
-      const userData = await userResponse.json();
+      const data = await response.json();
 
-      // greet the user by name and redirect to the meeting page
-      alert(`Welcome, ${userData.name}`);
-      form.reset();
-      window.location.href = "/meeting/meeting.html";
-    } else {
-      const message = await response.text();
-      throw new Error(message);
+      // Save token if Remember Me is checked
+      if (user.rememberMe && data.token) {
+        localStorage.setItem("authToken", data.token); // Save token for client-side use
+      }
+
+      alert(`Welcome ${data.user.fullName}!`);
+      window.location.href = "/meeting/meeting.html"; // Redirect after login
+    } catch (error) {
+      alert(error.message);
     }
-  } catch (error) {
-    alert(error.message);
   }
 }
 
-const appContainer = document.getElementById("app") as HTMLDivElement;
-const loginForm = new LoginForm().createForm();
-loginForm.addEventListener("submit", submitLoginForm);
-appContainer.append(loginForm);
+// Initialize the Login form
+document.addEventListener("DOMContentLoaded", () => {
+  const loginForm = new LoginForm("app");
+  loginForm.renderForm();
+});
