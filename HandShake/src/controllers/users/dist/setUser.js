@@ -36,131 +36,116 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.login = exports.register = exports.secret = void 0;
-var userModel_1 = require("../../models/users/userModel");
+exports.login = exports.register = void 0;
+var dotenv_1 = require("dotenv");
+dotenv_1["default"].config();
 var jwt_simple_1 = require("jwt-simple");
-exports.secret = "Alexis";
-var bcrypt = require("bcrypt");
-var saltRounds = 10;
-// export async function addUser(req: any, res: any) {
-//   try {
-//     const { id, name, email, phone, password } = req.body;
-//     console.log(phone);
-//     if (!name || !email || !phone || !password) {
-//       return res.status(400).send({ error: "Please fill all the fields" });
-//     }
-//     const hashPassword = await bcrypt.hash(password, saltRounds);
-//     const result = await User.create({
-//       name,
-//       phone,
-//       email,
-//     });
-//     console.log(result);
-//     if (!result) {
-//       return res.status(400).send({ error: "No user info has been sent" });
-//     }
-//     return res.status(201).send({ message: "User has been successfully added!" });
-//   } catch (error: any) {
-//     console.error(error);
-//     return res.status(500).send({ error: "Couldn't add the user" });
-//   }
-// }
+var bcrypt_1 = require("bcrypt");
+var userModel_1 = require("../../models/users/userModel");
+var secret = process.env.SECRET_KEY; // Secret key from .env
+var saltRounds = parseInt(process.env.SALT_ROUNDS || "10"); // Salt rounds from .env
+// Register controller
 function register(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, name, email, phone, password, existingUser, hashPassword, error_1;
+        var _a, fullName, email, phone, password, confirmPassword, termsAgreed, existingUser, hashedPassword, newUser, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 4, , 5]);
-                    _a = req.body, name = _a.name, email = _a.email, phone = _a.phone, password = _a.password;
+                    _a = req.body, fullName = _a.fullName, email = _a.email, phone = _a.phone, password = _a.password, confirmPassword = _a.confirmPassword, termsAgreed = _a.termsAgreed;
+                    if (!fullName ||
+                        !email ||
+                        !phone ||
+                        !password ||
+                        !confirmPassword ||
+                        !termsAgreed) {
+                        res.status(400).json({ error: "All fields are required" });
+                        return [2 /*return*/];
+                    }
+                    if (password !== confirmPassword) {
+                        res.status(400).json({ error: "Passwords do not match" });
+                        return [2 /*return*/];
+                    }
                     return [4 /*yield*/, userModel_1.User.findOne({ email: email })];
                 case 1:
                     existingUser = _b.sent();
                     if (existingUser) {
-                        return [2 /*return*/, res.status(400).json({ message: "User already exists" })];
+                        res.status(400).json({ error: "User with this email already exists" });
+                        return [2 /*return*/];
                     }
-                    if (!name || !email || !phone || !password) {
-                        throw new Error("Please fill all the fields");
-                    }
-                    return [4 /*yield*/, bcrypt.hash(password, saltRounds)];
+                    return [4 /*yield*/, bcrypt_1["default"].hash(password, saltRounds)];
                 case 2:
-                    hashPassword = _b.sent();
+                    hashedPassword = _b.sent();
                     return [4 /*yield*/, userModel_1.User.create({
-                            name: name,
+                            fullName: fullName,
                             email: email,
                             phone: phone,
-                            password: hashPassword
+                            password: hashedPassword,
+                            termsAgreed: termsAgreed
                         })];
                 case 3:
-                    _b.sent();
-                    return [2 /*return*/, res
-                            .status(201)
-                            .send({ message: "Registration successfully completed" })];
+                    newUser = _b.sent();
+                    return [2 /*return*/, res.status(201).json({
+                            message: "User registered successfully",
+                            user: newUser
+                        })];
                 case 4:
                     error_1 = _b.sent();
                     console.error(error_1);
-                    if (error_1.code === "11000") {
-                        res.status(400).send({ error: "user already exists" });
-                    }
-                    console.error(error_1);
-                    return [2 /*return*/, res.status(500).send({ error: "Couldn't register" })];
+                    return [2 /*return*/, res.status(500).json({ error: "Internal server error" })];
                 case 5: return [2 /*return*/];
             }
         });
     });
 }
 exports.register = register;
+// Login controller
 function login(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, email, password, meetingId, user, match, token, error_2;
+        var _a, email, password, rememberMe, user, isPasswordValid, token, error_2;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
                     _b.trys.push([0, 3, , 4]);
-                    _a = req.body, email = _a.email, password = _a.password, meetingId = _a.meetingId;
-                    if (!email || !password || !meetingId) {
-                        throw new Error("Please fill all the fields!");
+                    _a = req.body, email = _a.email, password = _a.password, rememberMe = _a.rememberMe;
+                    // Validate required fields
+                    if (!email || !password) {
+                        return [2 /*return*/, res.status(400).json({ error: "Email and password are required" })];
                     }
                     return [4 /*yield*/, userModel_1.User.findOne({ email: email })];
                 case 1:
                     user = _b.sent();
                     if (!user) {
-                        return [2 /*return*/, res.status(400).send({ error: "Couldn't get the email." })];
+                        return [2 /*return*/, res.status(401).json({ error: "Invalid email or password" })];
                     }
-                    if (!user.password)
-                        throw new Error("Incorrect password!");
-                    return [4 /*yield*/, bcrypt.compare(password, user.password)];
+                    return [4 /*yield*/, bcrypt_1["default"].compare(password, user.password)];
                 case 2:
-                    match = _b.sent();
-                    console.log("is match", match);
-                    if (!match) {
-                        return [2 /*return*/, res.status(400).send({ error: "The password is incorrect" })];
+                    isPasswordValid = _b.sent();
+                    if (!isPasswordValid) {
+                        return [2 /*return*/, res.status(401).json({ error: "Invalid email or password" })];
                     }
-                    token = jwt_simple_1["default"].encode({ id: user._id, role: "user" }, exports.secret);
-                    res.cookie("user", token, {
+                    token = jwt_simple_1["default"].encode({
+                        id: user._id,
+                        exp: Math.floor(Date.now() / 1000) +
+                            (rememberMe ? 7 * 24 * 60 * 60 : 60 * 60)
+                    }, secret);
+                    // Set token in HTTP-only cookie
+                    res.cookie("token", token, {
                         httpOnly: true,
-                        maxAge: 1000 * 60 * 60 * 24 * 7
+                        maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000
                     });
-                    res.cookie("meetingId", meetingId, {
-                        httpOnly: true,
-                        maxAge: 1000 * 60 * 60 * 24 * 7
-                    }); // add meetingId to cookies
-                    res.status(200).json({
-                        message: "Login successful",
-                        user: {
-                            id: user._id,
-                            email: user.email,
-                            meetingId: meetingId
-                        }
-                    });
-                    return [3 /*break*/, 4];
+                    // Send response to client
+                    return [2 /*return*/, res.status(200).json({
+                            message: "Login successful",
+                            user: {
+                                fullName: user.fullName
+                            },
+                            token: token
+                        })];
                 case 3:
                     error_2 = _b.sent();
-                    console.error("Error in login:", error_2);
-                    res
-                        .status(500)
-                        .json({ message: "Internal server error: " + error_2.message });
-                    return [3 /*break*/, 4];
+                    console.error(error_2);
+                    return [2 /*return*/, res.status(500).json({ error: "Internal server error" })];
                 case 4: return [2 /*return*/];
             }
         });

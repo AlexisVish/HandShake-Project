@@ -1,25 +1,25 @@
-import mongoose, { Schema, Document, model } from "mongoose";
+<<<<<<< HEAD
+=======
+import { db } from "../../server";
 
-export interface IMovie extends Document {
+export interface Movie{
     title: string;
-    year: number;
     genre: string;
-    director: string;
-    rating: number;
-    imageURL: string;
-    userId?: string;
+    year: number;
+    image_url: string
 }
 
-const MovieSchema: Schema = new Schema({
-    title: { type: String, required: true },
-    year: { type: Number, required: true },
-    genre: { type: String, required: true },
-    director: { type: String, required: true },
-    rating: { type: Number, required: true },
-    imageURL: { type: String, required: true },
-    userId: { type: String }
 
-});
-
-const Movie = model<IMovie>("Movie", MovieSchema);
-export default Movie;
+  
+  export const getMovies = (callback: (err: Error | null, movies: Movie[]) => void) => {
+    db.all('SELECT * FROM movies', [], (err, rows) => {
+      callback(err, rows);
+    });
+  };
+  
+  export const getMovieById = (id: number, callback: (err: Error | null, movie?: Movie) => void) => {
+    db.get('SELECT * FROM movies WHERE id = ?', [id], (err, row) => {
+      callback(err, row);
+    });
+  };
+>>>>>>> main

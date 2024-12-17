@@ -1,107 +1,111 @@
-import { User } from "../../models/users/userModel";
-import jwt from "jwt-simple";
-export const secret = "Alexis";
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
+import dotenv from "dotenv";
+dotenv.config();
 
-// export async function addUser(req: any, res: any) {
-//   try {
-//     const { id, name, email, phone, password } = req.body;
-//     console.log(phone);
-//     if (!name || !email || !phone || !password) {
-//       return res.status(400).send({ error: "Please fill all the fields" });
-//     }
-    
-//     const hashPassword = await bcrypt.hash(password, saltRounds);
-//     const result = await User.create({
-//       name,
-//       phone,
-//       email,
-//     });
-//     console.log(result);
-//     if (!result) {
-//       return res.status(400).send({ error: "No user info has been sent" });
-//     }
-//     return res.status(201).send({ message: "User has been successfully added!" });
-//   } catch (error: any) {
-//     console.error(error);
-//     return res.status(500).send({ error: "Couldn't add the user" });
-//   }
-// }
+import jwt from "jwt-simple";
+import bcrypt from "bcrypt";
+import { User } from "../../models/users/userModel";
+
+const secret = process.env.SECRET_KEY as string; // Secret key from .env
+const saltRounds = parseInt(process.env.SALT_ROUNDS || "10"); // Salt rounds from .env
+
+// Register controller
 export async function register(req: any, res: any) {
   try {
-    const { name, email, phone, password } = req.body;
+    const { fullName, email, phone, password, confirmPassword, termsAgreed } =
+      req.body;
+
+    if (
+      !fullName ||
+      !email ||
+      !phone ||
+      !password ||
+      !confirmPassword ||
+      !termsAgreed
+    ) {
+      res.status(400).json({ error: "All fields are required" });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      res.status(400).json({ error: "Passwords do not match" });
+      return;
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
+      res.status(400).json({ error: "User with this email already exists" });
+      return;
     }
-    
-    if ( !name || !email || !phone || !password ) {
-      throw new Error("Please fill all the fields");
-    }
-    const hashPassword = await bcrypt.hash(password, saltRounds);
 
-    await User.create({
-      name,
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = await User.create({
+      fullName,
       email,
       phone,
-      password:hashPassword,
+      password: hashedPassword,
+      termsAgreed,
     });
- 
-    return res
-      .status(201)
-      .send({ message: "Registration successfully completed" });
-  } catch (error) {
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: newUser, // send user data back to the client
+    });
+  } catch (error: any) {
     console.error(error);
-    if ((error as any).code === "11000") {
-      res.status(400).send({ error: "user already exists" });
-    }
-    console.error(error);
-    return res.status(500).send({ error: "Couldn't register" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
+// Login controller
 export async function login(req: any, res: any) {
   try {
-    const { email, password, meetingId } = req.body;
-    if (!email || !password || !meetingId) {
-      throw new Error("Please fill all the fields!");
+    const { email, password, rememberMe } = req.body;
+
+    // Validate required fields
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
     }
+
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).send({ error: "Couldn't get the email." });
-    }
-    if (!user.password) throw new Error("Incorrect password!");
-    const match = await bcrypt.compare(password, user.password);
-    console.log("is match", match);
-    if (!match) {
-      return res.status(400).send({ error: "The password is incorrect" });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
-    const token = jwt.encode({ id: user._id, role: "user" }, secret);
-    res.cookie("user", token, {
+    // Compare password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    // Generate JWT token
+    const token = jwt.encode(
+      {
+        id: user._id,
+        exp:
+          Math.floor(Date.now() / 1000) +
+          (rememberMe ? 7 * 24 * 60 * 60 : 60 * 60),
+      },
+      secret
+    );
+
+    // Set token in HTTP-only cookie
+    res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000, // 7 days or 1 hour
     });
 
-    res.cookie("meetingId", meetingId, {
-      httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-    }); // add meetingId to cookies
-
-    res.status(200).json({
+    // Send response to client
+    return res.status(200).json({
       message: "Login successful",
       user: {
-        id: user._id,
-        email: user.email,
-        meetingId, // send meetingId in the response
+        fullName: user.fullName,
       },
+      token,
     });
   } catch (error: any) {
-    console.error("Error in login:", error);
-    res
-      .status(500)
-      .json({ message: `Internal server error: ${error.message}` });
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
