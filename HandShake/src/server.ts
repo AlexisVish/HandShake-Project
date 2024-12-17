@@ -11,7 +11,8 @@ app.get("/", (req, res) => {
 });
 
 //using mongoDB
-const dbUrl = "mongodb+srv://alexis:Vivalexxxa@cluster0.yzu9p.mongodb.net/";
+const dbUrl =
+  "mongodb+srv://Yulia:r0MTDkJoo6ropL10@cluster0.gl27q.mongodb.net";
 const database = "HandShake";
 
 mongoose
@@ -60,8 +61,8 @@ module.exports = db;
 import userRoute from "./routes/users/userRoute";
 app.use("/api/users", userRoute);
 
-import movieRoute from "./routes/movies/movieRoute";
-app.use("/api/movies", movieRoute);
+// import movieRoute from "./routes/movies/movieRoute";
+// app.use("/api/movies", movieRoute);
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);

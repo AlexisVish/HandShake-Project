@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+=======
 import { db } from "../../server";
 
 export interface Movie{
@@ -20,3 +22,4 @@ export interface Movie{
       callback(err, row);
     });
   };
+>>>>>>> main

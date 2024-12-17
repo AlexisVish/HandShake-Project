@@ -1,0 +1,122 @@
+[
+  {
+    "title": "Inception",
+    "year": 2010,
+    "genre": "Sci-Fi",
+    "director": "Christopher Nolan",
+    "rating": 8.8,
+    "imageURL": "https://www.themoviedb.org/t/p/original/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg"
+  },
+  {
+    "title": "The Shawshank Redemption",
+    "year": 1994,
+    "genre": "Drama",
+    "director": "Frank Darabont",
+    "rating": 9.3,
+    "imageURL": "https://www.themoviedb.org/t/p/original/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg"
+  },
+  {
+    "title": "The Godfather",
+    "year": 1972,
+    "genre": "Crime",
+    "director": "Francis Ford Coppola",
+    "rating": 9.2,
+    "imageURL": "https://www.themoviedb.org/t/p/original/3bhkrj58Vtu7enYsRolD1fZdja1.jpg"
+  },
+  {
+    "title": "The Dark Knight",
+    "year": 2008,
+    "genre": "Action",
+    "director": "Christopher Nolan",
+    "rating": 9.0,
+    "imageURL": "https://www.themoviedb.org/t/p/original/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg"
+  },
+  {
+    "title": "Pulp Fiction",
+    "year": 1994,
+    "genre": "Crime",
+    "director": "Quentin Tarantino",
+    "rating": 8.9,
+    "imageURL": "https://www.themoviedb.org/t/p/original/dM2w364MScsjFf8pfMbaWUcWrR.jpg"
+  },
+  {
+    "title": "Forrest Gump",
+    "year": 1994,
+    "genre": "Drama",
+    "director": "Robert Zemeckis",
+    "rating": 8.8,
+    "imageURL": "https://www.themoviedb.org/t/p/original/saHP97rTPS5eLmrLQEcANmKrsFl.jpg"
+  },
+  {
+    "title": "Fight Club",
+    "year": 1999,
+    "genre": "Drama",
+    "director": "David Fincher",
+    "rating": 8.8,
+    "imageURL": "https://www.themoviedb.org/t/p/original/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg"
+  },
+  {
+    "title": "The Matrix",
+    "year": 1999,
+    "genre": "Sci-Fi",
+    "director": "Lana Wachowski, Lilly Wachowski",
+    "rating": 8.7,
+    "imageURL": "https://www.themoviedb.org/t/p/original/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg"
+  },
+  {
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "year": 2001,
+    "genre": "Fantasy",
+    "director": "Peter Jackson",
+    "rating": 8.8,
+    "imageURL": "https://www.themoviedb.org/t/p/original/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg"
+  },
+  {
+    "title": "Star Wars: Episode V - The Empire Strikes Back",
+    "year": 1980,
+    "genre": "Sci-Fi",
+    "director": "Irvin Kershner",
+    "rating": 8.7,
+    "imageURL": "https://www.themoviedb.org/t/p/original/7BuH8itoSrLExs2YZSsM01Qk2no.jpg"
+  },
+  {
+    "title": "The Silence of the Lambs",
+    "year": 1991,
+    "genre": "Thriller",
+    "director": "Jonathan Demme",
+    "rating": 8.6,
+    "imageURL": "https://www.themoviedb.org/t/p/original/rplLJ2hPcOQmkFhTqUte0MkEaO2.jpg"
+  },
+  {
+    "title": "Saving Private Ryan",
+    "year": 1998,
+    "genre": "War",
+    "director": "Steven Spielberg",
+    "rating": 8.6,
+    "imageURL": "https://www.themoviedb.org/t/p/original/1wY4psJ5NVEhCuOYROwLH2XExM2.jpg"
+  },
+  {
+    "title": "Schindler's List",
+    "year": 1993,
+    "genre": "Biography",
+    "director": "Steven Spielberg",
+    "rating": 8.9,
+    "imageURL": "https://www.themoviedb.org/t/p/original/c8Ass7acuOe4za6DhSattE359gr.jpg"
+  },
+  {
+    "title": "The Green Mile",
+    "year": 1999,
+    "genre": "Crime",
+    "director": "Frank Darabont",
+    "rating": 8.6,
+    "imageURL": "https://www.themoviedb.org/t/p/original/sOHqdY1RnSn6kcfAHKu28jvTebE.jpg"
+  },
+  {
+    "title": "Interstellar",
+    "year": 2014,
+    "genre": "Sci-Fi",
+    "director": "Christopher Nolan",
+    "rating": 8.6,
+    "imageURL": "https://www.themoviedb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
+  }
+]
