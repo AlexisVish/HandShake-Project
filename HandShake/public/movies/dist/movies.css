@@ -1,0 +1,133 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  background-image: url(/HandShake/public/img/backGround.jpg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#movieContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 500px;
+}
+.card__image-wrapper {
+  width: 100%;
+  height: 60%;
+  background-image: url(/HandShake/public/img/placeholder.svg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.card__image-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.card__info {
+  flex: 1;
+  padding: 1rem;
+  color: #555;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.card__info h2 {
+  color: #a95784;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.card__info p {
+  margin: 0.25rem 0;
+  font-size: 1rem;
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+  margin-top: 1rem;
+}
+.buttons-container button {
+  flex: 1;
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.buttons-container button.yes-button {
+  background-color: #a95784;
+  color: #fff;
+}
+.buttons-container button.yes-button:hover {
+  background-color: #88456a;
+  transform: scale(1.05);
+}
+.buttons-container button.no-button {
+  background-color: #fef2f9;
+  color: #555;
+}
+.buttons-container button.no-button:hover {
+  background-color: #f892c9;
+  transform: scale(1.05);
+}
+
+.end-message {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+}
+.end-message p,
+.end-message h2 {
+  margin-bottom: 1rem;
+  color: #555;
+}
+.end-message ul {
+  list-style: none;
+  padding: 0;
+}
+.end-message ul li {
+  margin: 0.5rem 0;
+  color: #a95784;
+  font-weight: bold;
+}
+.end-message a {
+  text-decoration: none;
+  color: #a95784;
+  font-weight: bold;
+}
+.end-message a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,54 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    /* Светлый фон для контраста */
+    color: #333;
+    /* Темный цвет текста */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+h1 {
+    color: #007BFF;
+    /* Яркий акцентный цвет для заголовка */
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+ul#movies-list {
+    list-style-type: none;
+    /* Убираем стандартные маркеры списка */
+    padding: 0;
+    width: 100%;
+    max-width: 600px;
+    /* Максимальная ширина списка */
+}
+
+ul#movies-list li {
+    background-color: #ffffff;
+    /* Белый фон для списка */
+    border: 1px solid #ddd;
+    /* Легкая граница для отделения элементов */
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Легкая тень для объема */
+    font-size: 1.2rem;
+    color: #555;
+    /* Спокойный цвет текста */
+    transition: background-color 0.3s ease;
+}
+
+ul#movies-list li:hover {
+    background-color: #f0f8ff;
+    /* Легкий голубой фон при наведении */
+    cursor: pointer;
+    /* Указатель, чтобы подчеркнуть интерактивность */
+}

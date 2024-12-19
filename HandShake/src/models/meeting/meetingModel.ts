@@ -1,24 +1,38 @@
-import { model, Schema } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-export const meetingSchema = new Schema({
-  id: {
+// Interface for meeting
+interface IMeeting extends Document {
+  meetingId: string;
+  participants: {
+    userId: mongoose.Types.ObjectId;
+    likedMovies: mongoose.Types.ObjectId[];
+  }[];
+}
+
+// Meeting schema
+const MeetingSchema: Schema = new Schema({
+  meetingId: {
     type: String,
     required: true,
+    unique: true,
   },
-  UserID1:{
-    type: String,
-    required: true,
-  },
-  UserID2:{
-    type: String,
-    required: true,
-  },
-  meetingMovie:{
-    type: String,
-    required: true,
-  },
+  participants: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User", // Reference to the User model
+        required: true,
+      },
+      likedMovies: [
+        {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Movie", // Reference to the Movie model
+        },
+      ],
+    },
+  ],
 });
 
-const Meeting = model("Meeting", meetingSchema);
+const Meeting = mongoose.model<IMeeting>("Meeting", MeetingSchema);
 
 export default Meeting;

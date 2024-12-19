@@ -131,7 +131,7 @@ function login(req, res) {
                     }, secret);
                     // Set token in HTTP-only cookie
                     res.cookie("token", token, {
-                        httpOnly: true,
+                        httpOnly: false,
                         maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 60 * 60 * 1000
                     });
                     // Send response to client

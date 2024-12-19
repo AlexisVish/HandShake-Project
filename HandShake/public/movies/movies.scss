@@ -1,0 +1,165 @@
+// Глобальные переменные
+$primary-color: #fbc2e1;
+$secondary-color: #a95784;
+$text-color: #555;
+$card-bg: #ffffff;
+$border-radius: 12px;
+$box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+$placeholder: url(/HandShake/public/img/placeholder.svg);
+$background: url(/HandShake/public/img/backGround.jpg);
+
+// Сброс стилей
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    background-image: $background;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; // Высота экрана
+    overflow: hidden; // Убираем прокрутку
+}
+
+// Контейнер для фильмов
+#movieContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 400px; // Размер карточки фиксирован
+}
+
+// Карточка фильма
+.card {
+    background-color: $card-bg;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 500px; // Фиксированная высота карточки
+
+    // Обёртка для изображения
+    &__image-wrapper {
+        width: 100%;
+        height: 60%; // 60% высоты карточки выделено под постер
+        background-image: $placeholder;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; // Пропорциональное размещение
+        }
+    }
+
+    // Информация о фильме
+    &__info {
+        flex: 1; // Занимает оставшееся пространство
+        padding: 1rem;
+        color: $text-color;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+
+        h2 {
+            color: $secondary-color;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin: 0.25rem 0;
+            font-size: 1rem;
+        }
+    }
+}
+
+// Контейнер кнопок
+.buttons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 400px;
+    margin-top: 1rem;
+
+    button {
+        flex: 1;
+        margin: 0 0.5rem;
+        padding: 0.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        border: none;
+        border-radius: $border-radius;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &.yes-button {
+            background-color: $secondary-color;
+            color: #fff;
+
+            &:hover {
+                background-color: darken($secondary-color, 10%);
+                transform: scale(1.05);
+            }
+        }
+
+        &.no-button {
+            background-color: lighten($primary-color, 10%);
+            color: $text-color;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+                transform: scale(1.05);
+            }
+        }
+    }
+}
+
+// Конечное сообщение
+.end-message {
+    background-color: $card-bg;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    padding: 1.5rem;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+
+    p,
+    h2 {
+        margin-bottom: 1rem;
+        color: $text-color;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+            margin: 0.5rem 0;
+            color: $secondary-color;
+            font-weight: bold;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: $secondary-color;
+        font-weight: bold;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
