@@ -5,24 +5,42 @@ $text-color: #555;
 $card-bg: #ffffff;
 $border-radius: 12px;
 $box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-$placeholder: url(/HandShake/public/img/placeholder.svg);
-$background: url(/HandShake/public/img/backGround.jpg);
+$placeholder: url('/HandShake/public/img/placeholder.svg');
+$background-image: url('/HandShake/public/img/backGround.jpg');
 
-// Сброс стилей
+// Reset default margins and paddings
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+// Body styling
 body {
+    margin: 0;
+    padding: 0;
     font-family: "Arial", sans-serif;
-    background-image: $background;
     display: flex;
-    justify-content: center;
     align-items: center;
-    height: 100vh; // Высота экрана
-    overflow: hidden; // Убираем прокрутку
+    justify-content: center;
+    min-height: 100vh;
+    min-width: 100vw;
+    position: relative;
+    overflow: hidden;
+
+    // Blurred background
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: $background-image no-repeat center center fixed;
+        background-size: cover;
+        filter: blur(10px);
+        z-index: -1;
+    }
 }
 
 // Контейнер для фильмов
