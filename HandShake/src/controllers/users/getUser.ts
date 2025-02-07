@@ -8,46 +8,31 @@ const secret = process.env.SECRET_KEY as string; // Secret key from .env
 // Get User Controller
 export async function getUser(req: any, res: any) {
   try {
-    // Get token from cookies or headers
     const token =
       req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
-    // Check if token is missing
     if (!token) {
+      console.error("No token provided");
       return res.status(401).json({ error: "Unauthorized: Token is missing" });
     }
 
-    // Decode token
-    let decoded;
-    try {
-      decoded = jwt.decode(token, secret);
-    } catch (error) {
-      return res.status(401).json({ error: "Unauthorized: Invalid token" });
-    }
+    const decoded = jwt.decode(token, secret);
 
-    // Get user ID from decoded token
     const userId = decoded.id;
 
-    if (!userId) {
-      return res
-        .status(400)
-        .json({ error: "Invalid token: User ID is missing" });
-    }
-
-    // Find user by ID
-    const user = await User.findById(userId).select("-password"); // Exclude password from the response
+    const user = await User.findById(userId).select("-password");
 
     if (!user) {
+      console.error("User not found");
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Send response to client
     return res.status(200).json({
-      message: "User data retrieved successfully",
-      user,
+      message: "User retrieved successfully",
+      fullName: user.fullName,
     });
-  } catch (error: any) {
-    console.error(error);
+  } catch (error) {
+    console.error("Error in GetUser:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }

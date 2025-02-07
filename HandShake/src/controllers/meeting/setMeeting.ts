@@ -9,7 +9,7 @@ const secret = process.env.SECRET_KEY as string; // JWT Secret key
 // Controller for creating or joining a meeting
 export async function setMeeting(req: any, res: any) {
   try {
-    // 1. Получаем токен из cookies или заголовков
+    // get the token from the cookies or headers
     const token =
       req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
@@ -17,7 +17,7 @@ export async function setMeeting(req: any, res: any) {
       return res.status(401).json({ error: "Unauthorized: Token is missing" });
     }
 
-    // 2. Декодируем токен и получаем userId
+    // decode the token to get the user ID
     let decoded;
     try {
       decoded = jwt.decode(token, secret);
@@ -31,29 +31,27 @@ export async function setMeeting(req: any, res: any) {
         .status(400)
         .json({ error: "Invalid token: User ID is missing" });
     }
-
-
     
-    // 3. Получаем meetingId из запроса
+    // get the meetingId from the request body
     const { meetingId } = req.body;
     if (!meetingId) {
       return res.status(400).json({ error: "Meeting ID is required" });
     }
 
-    // 4. Находим митинг или создаём новый
+    // find the meeting in the database or create a new one
     let meeting = await Meeting.findOne({ meetingId });
 
     if (!meeting) {
-      // Создаём новый митинг
+      // create a new meeting
       meeting = await Meeting.create({
         meetingId,
         participants: [{ userId, likedMovies: [] }],
       });
 
-      // Добавляем meetingId в cookies
+      // add the meetingId to the cookies
       res.cookie("meetingId", meetingId, {
-        httpOnly: false, // Чтобы cookie был доступен на клиентской стороне
-        maxAge: 60 * 60 * 1000, // 1 час
+        httpOnly: false, // for reading the cookie in the frontend
+        maxAge: 60 * 60 * 1000, // 1 hour
       });
 
       return res.status(201).json({
@@ -62,6 +60,7 @@ export async function setMeeting(req: any, res: any) {
       });
     }
 
+    // check if the user is already in the meeting
    const isUserInMeeting = meeting.participants.some((participant) => {
      if (typeof participant.userId === "string") {
        return participant.userId === userId;
@@ -75,7 +74,7 @@ export async function setMeeting(req: any, res: any) {
    } else {
      console.log("User already exists in the meeting.");
    }
-     // 6. Возвращаем успешный ответ
+     // add the meetingId to the cookies
     return res.status(200).json({
       message: "User successfully added to the meeting",
       meeting,

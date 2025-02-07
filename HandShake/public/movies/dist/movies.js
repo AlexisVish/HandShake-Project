@@ -98,7 +98,7 @@ var MovieApp = /** @class */ (function () {
         this.movieContainer.appendChild(movieCard);
         this.movieContainer.appendChild(buttonsContainer);
     };
-    // Создание карточки фильма
+    // create a movie card
     MovieApp.prototype.createMovieCard = function (movie) {
         var movieCard = document.createElement("div");
         movieCard.className = "card";
@@ -150,8 +150,9 @@ var MovieApp = /** @class */ (function () {
     };
     // Display a message when no more movies are available
     MovieApp.prototype.displayNoMoviesMessage = function () {
-        this.sendMyMoviesToServer(); // Отправляем фильмы на сервер
-        this.movieContainer.innerHTML = "\n      <div class=\"end-message\">\n        <p>No more movies to display.</p>\n        <h2>Selected movies:</h2>\n        <ul>\n          " + this.myMovies.map(function (movie) { return "<li>" + movie.title + "</li>"; }).join("") + "\n        </ul>\n        <a href=\"/home/home.html\" class=\"home-link\">Go to Home</a>\n      </div>\n    ";
+        this.sendMyMoviesToServer(); // send the collected movies to the server
+        // Render the "No Movies" message
+        this.movieContainer.innerHTML = "\n    <div class=\"end-message\">\n      <p>No more movies to display.</p>\n      <h2>Selected movies:</h2>\n      <ul>\n        " + this.myMovies.map(function (movie) { return "<li>" + movie.title + "</li>"; }).join("") + "\n      </ul>\n      <a href=\"/home/home.html\" class=\"home-link\">\n        <button class=\"home-button\">Go to Home</button>\n      </a>\n    </div>\n  ";
     };
     // Send the collected movies to the server
     MovieApp.prototype.sendMyMoviesToServer = function () {
@@ -166,13 +167,12 @@ var MovieApp = /** @class */ (function () {
                             .find(function (row) { return row.startsWith("token="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
                         if (token) {
                             decodedToken = JSON.parse(atob(token.split(".")[1]));
-                            userId = decodedToken.id; // Присваиваем значение
+                            userId = decodedToken.id;
                             console.log("Decoded User ID:", userId);
                         }
                         else {
                             console.error("Token not found in cookies.");
                         }
-                        // Теперь userId доступен в коде ниже
                         if (!userId) {
                             console.error("User ID not found in cookies. Ensure the user is logged in.");
                             return [2 /*return*/];

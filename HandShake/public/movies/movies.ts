@@ -55,7 +55,7 @@ class MovieApp {
     this.movieContainer.appendChild(buttonsContainer);
   }
 
-  // Создание карточки фильма
+  // create a movie card
   private createMovieCard(movie: IMovie): HTMLDivElement {
     const movieCard = document.createElement("div");
     movieCard.className = "card";
@@ -131,24 +131,27 @@ class MovieApp {
 
   // Display a message when no more movies are available
   private displayNoMoviesMessage(): void {
-    this.sendMyMoviesToServer(); // Отправляем фильмы на сервер
+    this.sendMyMoviesToServer(); // send the collected movies to the server
 
+    // Render the "No Movies" message
     this.movieContainer.innerHTML = `
-      <div class="end-message">
-        <p>No more movies to display.</p>
-        <h2>Selected movies:</h2>
-        <ul>
-          ${this.myMovies.map((movie) => `<li>${movie.title}</li>`).join("")}
-        </ul>
-        <a href="/home/home.html" class="home-link">Go to Home</a>
-      </div>
-    `;
+    <div class="end-message">
+      <p>No more movies to display.</p>
+      <h2>Selected movies:</h2>
+      <ul>
+        ${this.myMovies.map((movie) => `<li>${movie.title}</li>`).join("")}
+      </ul>
+      <a href="/home/home.html" class="home-link">
+        <button class="home-button">Go to Home</button>
+      </a>
+    </div>
+  `;
   }
 
   // Send the collected movies to the server
   private async sendMyMoviesToServer(): Promise<void> {
     // Extract userId and meetingId from cookies
-    let userId: string | undefined; // Объявляем переменную вне блока
+    let userId: string | undefined;
 
     const token = document.cookie
       .split("; ")
@@ -157,13 +160,12 @@ class MovieApp {
 
     if (token) {
       const decodedToken = JSON.parse(atob(token.split(".")[1]));
-      userId = decodedToken.id; // Присваиваем значение
+      userId = decodedToken.id; 
       console.log("Decoded User ID:", userId);
     } else {
       console.error("Token not found in cookies.");
     }
 
-    // Теперь userId доступен в коде ниже
     if (!userId) {
       console.error(
         "User ID not found in cookies. Ensure the user is logged in."
