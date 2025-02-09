@@ -29,6 +29,62 @@ body::before {
   z-index: -1;
 }
 
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  color: #555;
+}
+
+h1 {
+  color: #fbc2e1;
+  font-size: 72px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fbc2e1;
+  color: white;
+  border: 1px solid #fbc2e1;
+  border-radius: 50px;
+  font-size: 20px;
+  margin: 15px;
+  padding: 12px 30px;
+  cursor: pointer;
+  transition: all 0.01s ease-in-out;
+}
+
+.btn:hover {
+  background-color: #a95784;
+  color: #fbc2e1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px #555;
+}
+
+.btn:active {
+  transform: translateY(0px);
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 48px;
+  }
+
+  .btn {
+    font-size: 18px;
+    padding: 10px 25px;
+  }
+}
 #movieContainer {
   display: flex;
   flex-direction: column;

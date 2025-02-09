@@ -150,9 +150,13 @@ var MovieApp = /** @class */ (function () {
     };
     // Display a message when no more movies are available
     MovieApp.prototype.displayNoMoviesMessage = function () {
+        var _a;
         this.sendMyMoviesToServer(); // send the collected movies to the server
         // Render the "No Movies" message
-        this.movieContainer.innerHTML = "\n    <div class=\"end-message\">\n      <p>No more movies to display.</p>\n      <h2>Selected movies:</h2>\n      <ul>\n        " + this.myMovies.map(function (movie) { return "<li>" + movie.title + "</li>"; }).join("") + "\n      </ul>\n      <a href=\"/home/home.html\" class=\"home-link\">\n        <button class=\"home-button\">Go to Home</button>\n      </a>\n    </div>\n  ";
+        var meetingId = (_a = document.cookie
+            .split("; ")
+            .find(function (row) { return row.startsWith("meetingId="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
+        this.movieContainer.innerHTML = "\n    <div class=\"end-message\">\n      <p>No more movies to display.</p>\n      <h2>Selected movies:</h2>\n      <ul>\n        " + this.myMovies.map(function (movie) { return "<li>" + movie.title + "</li>"; }).join("") + "\n      </ul>\n      <a href=\"/home/home.html?meetingId=" + meetingId + "\" class=\"home-link\">\n        <button class=\"home-button\">Go to Home</button>\n      </a>\n    </div>\n  ";
     };
     // Send the collected movies to the server
     MovieApp.prototype.sendMyMoviesToServer = function () {

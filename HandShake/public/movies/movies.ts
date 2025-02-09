@@ -134,6 +134,11 @@ class MovieApp {
     this.sendMyMoviesToServer(); // send the collected movies to the server
 
     // Render the "No Movies" message
+    const meetingId = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("meetingId="))
+      ?.split("=")[1];
+
     this.movieContainer.innerHTML = `
     <div class="end-message">
       <p>No more movies to display.</p>
@@ -141,7 +146,7 @@ class MovieApp {
       <ul>
         ${this.myMovies.map((movie) => `<li>${movie.title}</li>`).join("")}
       </ul>
-      <a href="/home/home.html" class="home-link">
+      <a href="/home/home.html?meetingId=${meetingId}" class="home-link">
         <button class="home-button">Go to Home</button>
       </a>
     </div>

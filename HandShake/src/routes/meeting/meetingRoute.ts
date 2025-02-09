@@ -6,6 +6,6 @@ import { getCommonMovies } from "../../controllers/meeting/compareMovies";
 const router = Router();
 
 router.post("/set-meeting", setMeeting);
-router.get("/common-movies", getCommonMovies);
+router.get("/common-movies/:meetingId", getCommonMovies);
 
 export default router;

@@ -1,32 +1,38 @@
-@import '../style.scss';
+@import "../style.scss"; // Import global styles
 
-h1 {
-    color: #007BFF;
-    font-size: 2.5rem;
-    margin-bottom: 20px;
+#movies-list-container {
+    
+    position: relative; 
+    background-color: $card-bg;
+    border-radius: $border-radius;
+    box-shadow: $box-shadow;
+    padding: 1.5rem;
     text-align: center;
-}
-
-ul#movies-list {
-    list-style-type: none;
-    padding: 0;
     width: 100%;
-    max-width: 600px;
-}
+    max-width: 400px;
+    margin: 2rem auto;
+    height: auto; 
 
-ul#movies-list li {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 4px $text-color;
-    font-size: 1.2rem;
-    color: #555;
-    transition: background-color 0.3s ease;
-}
+    p {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
 
-ul#movies-list li:hover {
-    background-color: #f0f8ff;
-    cursor: pointer;
+    h2{
+        color: $secondary-color;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin-bottom: 1rem; 
+
+        li {
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            color: $text-color;
+        }
+    }
 }

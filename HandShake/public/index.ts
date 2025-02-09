@@ -17,9 +17,6 @@ regButton.textContent="Registration"
 logButton.addEventListener("click", handleLogin)
 regButton.addEventListener("click", handleRegistration)
 
-
-
-
 function handleLogin(){
     window.location.href="/login/login.html";
 }

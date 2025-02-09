@@ -1,54 +1,53 @@
 import Meeting from "../../models/meeting/meetingModel";
-import Movie from "../../models/movies/movieModel"; // Импорт модели фильмов
+import Movie from "../../models/movies/movieModel";
 
 export async function getCommonMovies(req: any, res: any) {
   try {
-    const meetingId = req.cookies?.meetingId || req.body.meetingId;
-
+    const { meetingId } = req.params;
     if (!meetingId) {
+      console.error("Meeting ID is missing");
       return res.status(400).json({ error: "Meeting ID is missing" });
     }
 
-    const meeting = await Meeting.findOne({ meetingId });
+    console.log("Received Meeting ID:", meetingId);
 
+    const meeting = await Meeting.findOne({ meetingId });
     if (!meeting) {
+      console.error("Meeting not found for ID:", meetingId);
       return res.status(404).json({ error: "Meeting not found" });
     }
 
-    const participants = meeting.participants;
+    console.log("Fetched Meeting:", meeting);
 
+    const participants = meeting.participants || [];
     if (participants.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "No participants found in meeting" });
-    }
-
-    const allMovies = participants.map(
-      (participant) => participant.likedMovies
-    );
-
-    // Находим общие идентификаторы фильмов
-    const [firstList, ...otherLists] = allMovies;
-
-    if (!firstList || firstList.length === 0) {
       return res.status(200).json({ commonMovies: [] });
     }
 
-    const commonMovieIds = firstList.filter((movieId) =>
-      otherLists.every((list) => list.includes(movieId))
+    // Обрабатываем фильмы участников
+    const commonMovieIds = participants.reduce(
+      (acc: string[], participant: any) => {
+        const likedMovies = participant.likedMovies || [];
+        if (!acc.length) {
+          return likedMovies; // Если это первый участник, возвращаем его фильмы
+        }
+        return acc.filter((id) => likedMovies.includes(id)); // Пересекаем массивы
+      },
+      []
     );
 
-    // Извлекаем названия фильмов из базы данных
+    // Получаем названия фильмов
     const commonMovies = await Movie.find({
       _id: { $in: commonMovieIds },
     }).select("title -_id");
 
-    // Возвращаем список названий фильмов
-    return res
-      .status(200)
-      .json({ commonMovies: commonMovies.map((movie) => movie.title) });
+    console.log("Common Movies Titles:", commonMovies);
+
+    return res.status(200).json({
+      commonMovies: commonMovies.map((movie) => movie.title),
+    });
   } catch (error: any) {
-    console.error(error);
+    console.error("Error in getCommonMovies:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }

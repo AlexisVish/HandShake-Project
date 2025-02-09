@@ -1,10 +1,12 @@
 // Global variables
-$primary-color: #fbc2e1; // Primary color
-$secondary-color: #a95784; // Accent color
-$text-color: #555; // Text color
-$background-image: url('/img/backGround.jpg'); // Correct absolute path
-$border-radius: 8px;
-$input-padding: 12px;
+$primary-color: #fbc2e1;
+$secondary-color: #a95784;
+$text-color: #555;
+$card-bg: #ffffff;
+$border-radius: 12px;
+$box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+$placeholder: url('/img/placeholder.svg');
+$background-image: url('/img/backGround.jpg');
 
 // Reset default margins and paddings
 * {
