@@ -24,19 +24,19 @@ export async function getCommonMovies(req: any, res: any) {
       return res.status(200).json({ commonMovies: [] });
     }
 
-    // Обрабатываем фильмы участников
+    // working with the likedMovies array of each participant
     const commonMovieIds = participants.reduce(
       (acc: string[], participant: any) => {
         const likedMovies = participant.likedMovies || [];
         if (!acc.length) {
-          return likedMovies; // Если это первый участник, возвращаем его фильмы
+          return likedMovies; // if acc is empty, return likedMovies
         }
-        return acc.filter((id) => likedMovies.includes(id)); // Пересекаем массивы
+        return acc.filter((id) => likedMovies.includes(id)); // else, return the intersection of acc and likedMovies
       },
       []
     );
 
-    // Получаем названия фильмов
+    // get the common movies from the database
     const commonMovies = await Movie.find({
       _id: { $in: commonMovieIds },
     }).select("title -_id");
